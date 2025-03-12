@@ -35,6 +35,19 @@ const Login = () => {
     }
   };
 
+  // For now, we'll just simulate a signup action
+  const handleSignUp = () => {
+    // You would typically navigate to a signup page here
+    toast({
+      title: "Sign up coming soon!",
+      description: "This feature is under development. For now, use any email/password to login.",
+    });
+    
+    // Fill in demo credentials to make it easier to test
+    setEmail("demo@example.com");
+    setPassword("password");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-muted flex items-center justify-center px-4">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg card-shine">
@@ -90,9 +103,9 @@ const Login = () => {
         <div className="text-center text-sm">
           <p className="text-muted-foreground">
             Don't have an account?{" "}
-            <a href="#" className="text-primary hover:underline">
+            <button onClick={handleSignUp} className="text-primary hover:underline">
               Sign up
-            </a>
+            </button>
           </p>
         </div>
       </div>

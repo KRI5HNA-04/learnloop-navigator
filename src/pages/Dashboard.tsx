@@ -33,9 +33,30 @@ const Dashboard = () => {
         
         <h2 className="text-xl font-semibold mb-4">Your Learning Stats</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <StatsCard />
-          <StatsCard />
-          <StatsCard />
+          <StatsCard 
+            title="Completion Rate"
+            value="85"
+            unit="%"
+            progress={85}
+            details={["Above average", "Top 25% learners"]}
+            showProgressRing={true}
+          />
+          <StatsCard 
+            title="Learning Streak"
+            value="15"
+            unit="days"
+            progress={75}
+            details={["Current streak", "Personal best: 22 days"]}
+            showProgressRing={true}
+          />
+          <StatsCard 
+            title="Course Progress"
+            value="4"
+            unit="/12"
+            progress={33}
+            details={["React Basics", "Advanced JavaScript"]}
+            showProgressRing={true}
+          />
         </div>
         
         <h2 className="text-xl font-semibold mb-4">Continue Learning</h2>
