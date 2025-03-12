@@ -2,7 +2,9 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { StatsCard } from "@/components/StatsCard";
+import { StatsSummaryCard } from "@/components/StatsSummaryCard";
 import { CourseCard } from "@/components/CourseCard";
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
@@ -13,19 +15,17 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Stats Section - Left Side */}
           <div className="lg:col-span-1 space-y-6">
-            <StatsCard 
-              title="Current Streak"
-              value="15"
-              unit="Days"
-              progress={75}
-              details={["Next reward in 5 days", "Current rank: #42"]}
-            />
-            <StatsCard 
-              title="Total Rewards"
-              value="2,500"
-              unit="Coins"
-              progress={65}
-              details={["Silver tier reached", "Next tier: 500 coins away"]}
+            <StatsSummaryCard 
+              streak={{
+                current: 15,
+                nextReward: 5,
+                rank: 42
+              }}
+              rewards={{
+                total: 2500,
+                tier: "Silver",
+                nextTier: 500
+              }}
             />
             <StatsCard 
               title="Completion Rate"
@@ -33,6 +33,7 @@ const Index = () => {
               unit="%"
               progress={85}
               details={["Above average", "Top 25% learners"]}
+              showProgressRing={true}
             />
           </div>
           
@@ -68,6 +69,7 @@ const Index = () => {
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };
