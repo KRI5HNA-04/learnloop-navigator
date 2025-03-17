@@ -1,4 +1,3 @@
-
 import { Bell, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,22 +17,37 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <Link to="/" className="text-xl font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              LearnFlow
+            <Link
+              to="/"
+              className="text-xl font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+            >
+              PathWise
             </Link>
             <div className="hidden md:flex items-center space-x-6">
-              <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
+              <Link
+                to="/"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 Home
               </Link>
               {isAuthenticated && (
-                <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+                <Link
+                  to="/dashboard"
+                  className="text-sm font-medium hover:text-primary transition-colors"
+                >
                   Dashboard
                 </Link>
               )}
-              <a href="#" className="text-sm font-medium hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 Paths
               </a>
-              <a href="#" className="text-sm font-medium hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
                 Leaderboard
               </a>
             </div>
@@ -46,16 +60,16 @@ export const Navbar = () => {
                 </Button>
                 <div className="relative">
                   {user?.avatar ? (
-                    <img 
-                      src={user.avatar} 
-                      alt={user.name} 
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
                       className="h-8 w-8 rounded-full cursor-pointer"
                       onClick={() => navigate("/dashboard")}
                     />
                   ) : (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       className="hover:bg-muted"
                       onClick={() => navigate("/dashboard")}
                     >
@@ -63,9 +77,9 @@ export const Navbar = () => {
                     </Button>
                   )}
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="hover:bg-muted"
                   onClick={handleLogout}
                   title="Logout"
@@ -74,7 +88,7 @@ export const Navbar = () => {
                 </Button>
               </>
             ) : (
-              <Button 
+              <Button
                 onClick={() => navigate("/login")}
                 className="bg-primary hover:bg-primary/90"
               >

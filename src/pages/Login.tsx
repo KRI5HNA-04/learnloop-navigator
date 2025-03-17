@@ -53,7 +53,7 @@ const Login = () => {
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg card-shine">
         <div className="text-center">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Welcome to LearnFlow
+            Welcome to PathWise
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Sign in to continue your learning journey
