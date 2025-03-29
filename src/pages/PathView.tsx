@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -25,6 +24,7 @@ const PathView = () => {
   const [tech, setTech] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("roadmap");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Find the technology by id
@@ -45,9 +45,9 @@ const PathView = () => {
   const handlePracticeClick = () => {
     toast({
       title: "Creating a collaborative room",
-      description: "Initializing a new collaborative coding session...",
+      description: "Redirecting to collaborative editor...",
     });
-    // In a real app, this would create a room and redirect to it
+    navigate('/collaborative-editor');
   };
 
   if (!tech) {
@@ -409,53 +409,10 @@ $ ${tech.id} start`}
                           </p>
                           <Button className="w-full" onClick={handlePracticeClick}>
                             <Users className="mr-2 h-4 w-4" />
-                            Create Collaborative Room
+                            Go to Collaborative Editor
                           </Button>
                         </CardContent>
                       </Card>
-                      
-                      <h3 className="text-xl font-medium mt-8 mb-4">Active Rooms</h3>
-                      <div className="space-y-4">
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-center">
-                              <div>
-                                <h4 className="font-medium">{tech.title} Basics Room</h4>
-                                <p className="text-sm text-muted-foreground">3 participants • Beginner level</p>
-                              </div>
-                              <Button variant="outline" size="sm">
-                                Join
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-center">
-                              <div>
-                                <h4 className="font-medium">Advanced {tech.title} Practice</h4>
-                                <p className="text-sm text-muted-foreground">2 participants • Advanced level</p>
-                              </div>
-                              <Button variant="outline" size="sm">
-                                Join
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-center">
-                              <div>
-                                <h4 className="font-medium">Project Collaboration</h4>
-                                <p className="text-sm text-muted-foreground">5 participants • Intermediate level</p>
-                              </div>
-                              <Button variant="outline" size="sm">
-                                Join
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
                     </div>
                   </div>
                 )}
