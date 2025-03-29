@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     // This is a mock login function - in production, you would validate with a real backend
-    if (email && password) {
+    if (email) {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
       
@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(mockUser);
       setIsAuthenticated(true);
     } else {
-      throw new Error("Email and password are required");
+      throw new Error("Email is required");
     }
   };
 

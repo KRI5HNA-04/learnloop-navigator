@@ -23,7 +23,7 @@ const Login = () => {
     try {
       // Simulate login
       await new Promise(resolve => setTimeout(resolve, 1000));
-      login({ email });
+      login(email, password); // Fixed: Passing both email and password
       toast({
         title: "Login successful",
         description: "Welcome back to PathWise!",
@@ -47,7 +47,7 @@ const Login = () => {
         console.log("Google token:", tokenResponse);
         
         // For demo purposes, we'll simulate a successful login
-        login({ email: "google-user@example.com" });
+        login("google-user@example.com", ""); // Fixed: Passing both email and password
         
         toast({
           title: "Google login successful",
