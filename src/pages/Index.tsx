@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { StatsSummaryCard } from "@/components/StatsSummaryCard";
 import { CourseCard } from "@/components/CourseCard";
 import { Toaster } from "@/components/ui/toaster";
+import { technologies } from "@/data/technologies";
 
 const Index = () => {
   return (
@@ -41,30 +42,19 @@ const Index = () => {
           <div className="lg:col-span-3">
             <h2 className="text-2xl font-bold mb-6">Popular Learning Paths</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              <CourseCard
-                title="Machine Learning Fundamentals"
-                students={15000}
-                lessons={24}
-                difficulty="Intermediate"
-                color="bg-purple-100"
-                icon="ml"
-              />
-              <CourseCard
-                title="React Development"
-                students={25000}
-                lessons={32}
-                difficulty="Beginner"
-                color="bg-blue-100"
-                icon="react"
-              />
-              <CourseCard
-                title="Java Programming"
-                students={20000}
-                lessons={28}
-                difficulty="Advanced"
-                color="bg-green-100"
-                icon="java"
-              />
+              {technologies.map((tech) => (
+                <CourseCard
+                  key={tech.id}
+                  id={tech.id}
+                  title={tech.title}
+                  description={tech.description}
+                  students={tech.students}
+                  lessons={tech.lessons}
+                  difficulty={tech.difficulty}
+                  color={tech.color}
+                  icon={tech.icon}
+                />
+              ))}
             </div>
           </div>
         </div>

@@ -1,28 +1,51 @@
 
-import { GraduationCap, Users, BookOpen } from "lucide-react";
+import { GraduationCap, Code, BookOpen, Terminal, Globe, Cloud, Smartphone, Layers, Brain, GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
+  id: string;
   title: string;
+  description?: string;
   students: number;
   lessons: number;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   color: string;
-  icon: 'ml' | 'react' | 'java';
+  icon: 'ml' | 'react' | 'java' | 'python' | 'js' | 'cloud' | 'mobile' | 'blockchain' | 'ai' | 'devops';
 }
 
-export const CourseCard = ({ title, students, lessons, difficulty, color, icon }: CourseCardProps) => {
+export const CourseCard = ({ id, title, description, students, lessons, difficulty, color, icon }: CourseCardProps) => {
+  const navigate = useNavigate();
+  
   const getIcon = () => {
     switch (icon) {
       case 'ml':
         return <GraduationCap className="h-8 w-8" />;
       case 'react':
-        return <Users className="h-8 w-8" />;
+        return <Code className="h-8 w-8" />;
       case 'java':
         return <BookOpen className="h-8 w-8" />;
+      case 'python':
+        return <Terminal className="h-8 w-8" />;
+      case 'js':
+        return <Globe className="h-8 w-8" />;
+      case 'cloud':
+        return <Cloud className="h-8 w-8" />;
+      case 'mobile':
+        return <Smartphone className="h-8 w-8" />;
+      case 'blockchain':
+        return <Layers className="h-8 w-8" />;
+      case 'ai':
+        return <Brain className="h-8 w-8" />;
+      case 'devops':
+        return <GitBranch className="h-8 w-8" />;
       default:
         return <BookOpen className="h-8 w-8" />;
     }
+  };
+
+  const handleViewPath = () => {
+    navigate(`/path/${id}`);
   };
 
   return (
@@ -31,9 +54,10 @@ export const CourseCard = ({ title, students, lessons, difficulty, color, icon }
         {getIcon()}
       </div>
       <h3 className="text-xl font-bold mb-2">{title}</h3>
+      {description && <p className="text-muted-foreground text-sm mb-4">{description}</p>}
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm text-muted-foreground">
-          <Users className="h-4 w-4 mr-2" />
+          <GraduationCap className="h-4 w-4 mr-2" />
           <span>{students.toLocaleString()} students</span>
         </div>
         <div className="flex items-center text-sm text-muted-foreground">
@@ -49,7 +73,7 @@ export const CourseCard = ({ title, students, lessons, difficulty, color, icon }
         }`}>
           {difficulty}
         </span>
-        <Button variant="outline" className="ml-2">
+        <Button variant="outline" className="ml-2" onClick={handleViewPath}>
           View Path
         </Button>
       </div>
