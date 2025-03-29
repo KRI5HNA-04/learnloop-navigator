@@ -1,36 +1,64 @@
 
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useParams, Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent 
+} from "@/components/ui/collapsible";
+import { 
+  BookOpen, Code, FileText, Play, CheckCircle, 
+  Folder, ChevronDown, ChevronRight, MessageSquare, 
+  Video, Users, Award, BarChart, Circle, Clock
+} from "lucide-react";
 import { technologies } from "@/data/technologies";
-import { Technology } from "@/data/technologies";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, FileText, Video, Code, CheckSquare, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
 
 const PathView = () => {
-  const { id } = useParams<{ id: string }>();
-  const [technology, setTechnology] = useState<Technology | null>(null);
+  const { id } = useParams();
+  const [tech, setTech] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("roadmap");
+  const { toast } = useToast();
 
   useEffect(() => {
-    const tech = technologies.find(t => t.id === id);
-    if (tech) {
-      setTechnology(tech);
-      document.title = `${tech.title} - PathWise`;
+    // Find the technology by id
+    const foundTech = technologies.find(t => t.id === id);
+    if (foundTech) {
+      setTech(foundTech);
+    } else {
+      // If not found by exact id, try to match by substring
+      const matchedTech = technologies.find(t => 
+        t.id.includes(id || "") || id?.includes(t.id)
+      );
+      if (matchedTech) {
+        setTech(matchedTech);
+      }
     }
   }, [id]);
 
-  if (!technology) {
+  const handlePracticeClick = () => {
+    toast({
+      title: "Creating a collaborative room",
+      description: "Initializing a new collaborative coding session...",
+    });
+    // In a real app, this would create a room and redirect to it
+  };
+
+  if (!tech) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-muted">
-        <Navbar />
-        <div className="container mx-auto px-4 pt-32 pb-20 text-center">
-          <h1 className="text-3xl font-bold">Learning path not found</h1>
-          <p className="mt-4 text-muted-foreground">
-            The learning path you're looking for doesn't exist or has been removed.
-          </p>
+      <div className="min-h-screen bg-gradient-to-b from-white to-muted flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Technology not found</h2>
+          <p className="text-muted-foreground mb-6">The learning path you're looking for doesn't exist yet.</p>
+          <Link to="/">
+            <Button>Return Home</Button>
+          </Link>
         </div>
       </div>
     );
@@ -39,328 +67,568 @@ const PathView = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-muted">
       <Navbar />
-      <div className="container mx-auto px-4 pt-32 pb-20">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">{technology.title}</h1>
-          <p className="text-muted-foreground mt-2">{technology.description}</p>
-          <div className="flex items-center mt-4 space-x-4">
-            <span className={`text-sm px-3 py-1 rounded-full ${
-              technology.difficulty === 'Beginner' ? 'bg-green-100 text-green-700' :
-              technology.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
-              'bg-red-100 text-red-700'
-            }`}>
-              {technology.difficulty}
-            </span>
-            <span className="text-sm text-muted-foreground">{technology.lessons} lessons</span>
-            <span className="text-sm text-muted-foreground">{technology.students.toLocaleString()} students</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="md:col-span-1">
-            <Card>
-              <CardContent className="p-0">
-                <nav className="flex flex-col">
-                  <Button 
-                    variant={activeTab === "roadmap" ? "default" : "ghost"} 
-                    className="justify-start rounded-none border-b"
+      <div className="pt-20 pb-10 px-4">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            {/* Sidebar */}
+            <div className="md:col-span-3">
+              <div className="bg-white shadow rounded-lg p-6 sticky top-24">
+                <div className={`w-14 h-14 rounded-lg mb-4 flex items-center justify-center ${tech.color}`}>
+                  {tech.icon === 'react' && <Code className="h-8 w-8" />}
+                  {tech.icon === 'python' && <Code className="h-8 w-8" />}
+                  {tech.icon === 'js' && <Code className="h-8 w-8" />}
+                  {tech.icon === 'ml' && <BarChart className="h-8 w-8" />}
+                  {/* Add other icons as needed */}
+                </div>
+                <h1 className="text-2xl font-bold mb-2">{tech.title}</h1>
+                <p className="text-muted-foreground mb-6">{tech.description}</p>
+                
+                <div className="space-y-1">
+                  <Button
+                    variant={activeTab === "roadmap" ? "default" : "ghost"}
+                    className="w-full justify-start"
                     onClick={() => setActiveTab("roadmap")}
                   >
                     <FileText className="mr-2 h-4 w-4" />
                     Roadmap
                   </Button>
-                  <Button 
-                    variant={activeTab === "docs" ? "default" : "ghost"} 
-                    className="justify-start rounded-none border-b"
+                  <Button
+                    variant={activeTab === "docs" ? "default" : "ghost"}
+                    className="w-full justify-start"
                     onClick={() => setActiveTab("docs")}
                   >
                     <BookOpen className="mr-2 h-4 w-4" />
                     Documentation
                   </Button>
-                  <Button 
-                    variant={activeTab === "resources" ? "default" : "ghost"} 
-                    className="justify-start rounded-none border-b"
+                  <Button
+                    variant={activeTab === "resources" ? "default" : "ghost"}
+                    className="w-full justify-start"
                     onClick={() => setActiveTab("resources")}
                   >
-                    <FolderOpen className="mr-2 h-4 w-4" />
+                    <Folder className="mr-2 h-4 w-4" />
                     Resources
                   </Button>
-                  <Button 
-                    variant={activeTab === "practice" ? "default" : "ghost"} 
-                    className="justify-start rounded-none border-b"
-                    onClick={() => setActiveTab("practice")}
+                  <Button
+                    variant={activeTab === "practice" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setActiveTab("practice");
+                      handlePracticeClick();
+                    }}
                   >
                     <Code className="mr-2 h-4 w-4" />
                     Practice
                   </Button>
-                  <Button 
-                    variant={activeTab === "tests" ? "default" : "ghost"} 
-                    className="justify-start rounded-none border-b"
+                  <Button
+                    variant={activeTab === "tests" ? "default" : "ghost"}
+                    className="w-full justify-start"
                     onClick={() => setActiveTab("tests")}
                   >
-                    <CheckSquare className="mr-2 h-4 w-4" />
+                    <CheckCircle className="mr-2 h-4 w-4" />
                     Tests
                   </Button>
-                  <Button 
-                    variant={activeTab === "videos" ? "default" : "ghost"} 
-                    className="justify-start rounded-none"
+                  <Button
+                    variant={activeTab === "videos" ? "default" : "ghost"}
+                    className="w-full justify-start"
                     onClick={() => setActiveTab("videos")}
                   >
                     <Video className="mr-2 h-4 w-4" />
                     Videos
                   </Button>
-                </nav>
-              </CardContent>
-            </Card>
-          </div>
+                </div>
 
-          {/* Main content area */}
-          <div className="md:col-span-3">
-            <Card className="p-6">
-              {activeTab === "roadmap" && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Learning Roadmap</h2>
-                  <div className="relative border-l-2 border-primary pl-6 pb-6 space-y-8">
-                    <div className="relative">
-                      <div className="absolute -left-[25px] top-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white">1</div>
-                      <h3 className="text-xl font-semibold">Fundamentals</h3>
-                      <p className="text-muted-foreground mt-2">Master the basic concepts and syntax of {technology.title}.</p>
-                      <ul className="mt-2 list-disc list-inside text-sm space-y-1">
-                        <li>Introduction to {technology.title}</li>
-                        <li>Setting up your development environment</li>
-                        <li>Basic syntax and data structures</li>
-                        <li>Control flow and functions</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="relative">
-                      <div className="absolute -left-[25px] top-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white">2</div>
-                      <h3 className="text-xl font-semibold">Intermediate Concepts</h3>
-                      <p className="text-muted-foreground mt-2">Build on your foundation with more advanced topics.</p>
-                      <ul className="mt-2 list-disc list-inside text-sm space-y-1">
-                        <li>Object-oriented programming</li>
-                        <li>Error handling</li>
-                        <li>Working with APIs</li>
-                        <li>Best practices and patterns</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="relative">
-                      <div className="absolute -left-[25px] top-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white">3</div>
-                      <h3 className="text-xl font-semibold">Advanced Topics</h3>
-                      <p className="text-muted-foreground mt-2">Dive into specialized areas and real-world applications.</p>
-                      <ul className="mt-2 list-disc list-inside text-sm space-y-1">
-                        <li>Performance optimization</li>
-                        <li>Security considerations</li>
-                        <li>Industry applications</li>
-                        <li>Building professional projects</li>
-                      </ul>
-                    </div>
-                    
-                    <div className="relative">
-                      <div className="absolute -left-[25px] top-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white">4</div>
-                      <h3 className="text-xl font-semibold">Mastery & Specialization</h3>
-                      <p className="text-muted-foreground mt-2">Become an expert in specific domains.</p>
-                      <ul className="mt-2 list-disc list-inside text-sm space-y-1">
-                        <li>Frameworks and libraries</li>
-                        <li>Advanced design patterns</li>
-                        <li>Contributing to open source</li>
-                        <li>Teaching and mentoring others</li>
-                      </ul>
-                    </div>
+                <Separator className="my-6" />
+
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <Users className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {tech.students.toLocaleString()} enrolled
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <BookOpen className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {tech.lessons} lessons
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <Award className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      Certificate available
+                    </span>
                   </div>
                 </div>
-              )}
+              </div>
+            </div>
 
-              {activeTab === "docs" && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Documentation</h2>
-                  <div className="prose max-w-none">
-                    <h3>Introduction to {technology.title}</h3>
-                    <p>
-                      {technology.title} is a powerful technology used widely in the industry for building robust applications.
-                      This comprehensive documentation will guide you through all aspects of {technology.title}, from basic concepts to advanced techniques.
+            {/* Main content */}
+            <div className="md:col-span-9">
+              <div className="bg-white shadow rounded-lg p-6">
+                {activeTab === "roadmap" && (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Learning Roadmap</h2>
+                    <p className="mb-6 text-muted-foreground">
+                      Follow this step-by-step roadmap to master {tech.title}
                     </p>
-                    
-                    <h4 className="mt-6">Getting Started</h4>
-                    <p>
-                      To begin your journey with {technology.title}, you'll need to set up your development environment.
-                      This involves installing the necessary tools and understanding the basic workflow.
-                    </p>
-                    
-                    <pre className="bg-muted p-4 rounded-md overflow-x-auto">
-                      <code>
-                        # Example installation command
-                        npm install {technology.id} --save
-                      </code>
-                    </pre>
-                    
-                    <h4 className="mt-6">Core Concepts</h4>
-                    <p>
-                      The core concepts in {technology.title} include understanding its architecture,
-                      data flow, and design patterns. Mastering these fundamentals is crucial for becoming proficient.
-                    </p>
-                    
-                    <ul className="list-disc pl-6">
-                      <li>Fundamental principle 1</li>
-                      <li>Fundamental principle 2</li>
-                      <li>Fundamental principle 3</li>
-                    </ul>
-                    
-                    <p className="text-sm text-muted-foreground mt-8">
-                      This documentation is continuously updated to reflect the latest developments in {technology.title}.
-                      Be sure to check back regularly for new information and best practices.
-                    </p>
+
+                    <div className="space-y-4">
+                      <Collapsible className="border rounded-lg overflow-hidden">
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-muted/50 hover:bg-muted transition-colors">
+                          <div className="flex items-center">
+                            <div className="bg-primary/10 p-2 rounded-full mr-3">
+                              <FileText className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="text-left">
+                              <h3 className="font-medium">Fundamentals</h3>
+                              <p className="text-sm text-muted-foreground">Core concepts and basics</p>
+                            </div>
+                          </div>
+                          <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <ul className="space-y-3">
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Introduction to {tech.title}</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Setting up your environment</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Core syntax and structures</span>
+                            </li>
+                          </ul>
+                        </CollapsibleContent>
+                      </Collapsible>
+
+                      <Collapsible className="border rounded-lg overflow-hidden">
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-muted/50 hover:bg-muted transition-colors">
+                          <div className="flex items-center">
+                            <div className="bg-primary/10 p-2 rounded-full mr-3">
+                              <Code className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="text-left">
+                              <h3 className="font-medium">Intermediate Concepts</h3>
+                              <p className="text-sm text-muted-foreground">Building on the basics</p>
+                            </div>
+                          </div>
+                          <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <ul className="space-y-3">
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Advanced patterns</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Best practices</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Common architectures</span>
+                            </li>
+                          </ul>
+                        </CollapsibleContent>
+                      </Collapsible>
+
+                      <Collapsible className="border rounded-lg overflow-hidden">
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-muted/50 hover:bg-muted transition-colors">
+                          <div className="flex items-center">
+                            <div className="bg-primary/10 p-2 rounded-full mr-3">
+                              <BarChart className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="text-left">
+                              <h3 className="font-medium">Advanced Topics</h3>
+                              <p className="text-sm text-muted-foreground">Expert-level material</p>
+                            </div>
+                          </div>
+                          <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="p-4 border-t">
+                          <ul className="space-y-3">
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Optimization techniques</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Enterprise integration</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Bleeding-edge features</span>
+                            </li>
+                          </ul>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {activeTab === "resources" && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Learning Resources</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Card className="p-4">
-                      <h3 className="font-semibold">Official Documentation</h3>
-                      <p className="text-sm text-muted-foreground">The official {technology.title} documentation with comprehensive guides.</p>
-                      <Button variant="link" className="p-0 h-auto mt-2">Visit resource</Button>
-                    </Card>
-                    
-                    <Card className="p-4">
-                      <h3 className="font-semibold">Community Forum</h3>
-                      <p className="text-sm text-muted-foreground">Connect with other learners and ask questions about {technology.title}.</p>
-                      <Button variant="link" className="p-0 h-auto mt-2">Visit resource</Button>
-                    </Card>
-                    
-                    <Card className="p-4">
-                      <h3 className="font-semibold">GitHub Repository</h3>
-                      <p className="text-sm text-muted-foreground">Explore the source code and contribute to {technology.title}.</p>
-                      <Button variant="link" className="p-0 h-auto mt-2">Visit resource</Button>
-                    </Card>
-                    
-                    <Card className="p-4">
-                      <h3 className="font-semibold">Tutorial Series</h3>
-                      <p className="text-sm text-muted-foreground">Step-by-step tutorials for learning {technology.title}.</p>
-                      <Button variant="link" className="p-0 h-auto mt-2">Visit resource</Button>
-                    </Card>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "practice" && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Practice Coding</h2>
-                  <div className="bg-muted p-4 rounded-md">
-                    <p className="mb-4">
-                      Join a collaborative coding session to practice {technology.title} with other learners.
-                      Create or join a room to start coding together.
-                    </p>
-                    <div className="flex flex-col space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Room Name</label>
-                        <input 
-                          type="text" 
-                          placeholder="Enter a room name..."
-                          className="w-full px-3 py-2 border rounded-md"
-                        />
-                      </div>
-                      <div>
-                        <Button>Create Coding Room</Button>
-                      </div>
-                      <div className="flex items-center">
-                        <div className="flex-1 h-px bg-border"></div>
-                        <p className="mx-4 text-sm text-muted-foreground">or</p>
-                        <div className="flex-1 h-px bg-border"></div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Join Existing Room</label>
-                        <div className="flex space-x-2">
-                          <input 
-                            type="text" 
-                            placeholder="Enter room ID..."
-                            className="flex-1 px-3 py-2 border rounded-md"
-                          />
-                          <Button variant="outline">Join Room</Button>
+                {activeTab === "docs" && (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Documentation</h2>
+                    <ScrollArea className="h-[600px] pr-4">
+                      <div className="space-y-6">
+                        <div>
+                          <h3 className="text-xl font-medium mb-3">Introduction</h3>
+                          <p className="leading-relaxed">
+                            {tech.title} is a powerful technology that enables developers to build modern, 
+                            efficient applications. This documentation will guide you through all the 
+                            essential concepts and techniques required to become proficient.
+                          </p>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+                        <Separator />
+                        <div>
+                          <h3 className="text-xl font-medium mb-3">Getting Started</h3>
+                          <p className="leading-relaxed mb-4">
+                            Before diving into {tech.title}, you'll need to set up your development environment.
+                            Follow these steps to get started:
+                          </p>
+                          <div className="bg-muted/50 p-4 rounded-lg mb-4">
+                            <pre className="text-sm overflow-x-auto">
+                              <code>
+                                {`# Install the necessary tools
+$ npm install -g ${tech.id}-cli
 
-              {activeTab === "tests" && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Skill Assessment Tests</h2>
-                  <div className="space-y-6">
-                    <Card className="p-4">
-                      <h3 className="font-semibold">Beginner Assessment</h3>
-                      <p className="text-sm text-muted-foreground mt-1">Test your understanding of basic {technology.title} concepts.</p>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">30 minutes</span>
-                        <Button size="sm">Start Test</Button>
-                      </div>
-                    </Card>
-                    
-                    <Card className="p-4">
-                      <h3 className="font-semibold">Intermediate Assessment</h3>
-                      <p className="text-sm text-muted-foreground mt-1">Evaluate your knowledge of more advanced topics.</p>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">45 minutes</span>
-                        <Button size="sm">Start Test</Button>
-                      </div>
-                    </Card>
-                    
-                    <Card className="p-4">
-                      <h3 className="font-semibold">Expert Assessment</h3>
-                      <p className="text-sm text-muted-foreground mt-1">Challenge yourself with complex problems and scenarios.</p>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">60 minutes</span>
-                        <Button size="sm">Start Test</Button>
-                      </div>
-                    </Card>
-                  </div>
-                </div>
-              )}
+# Create a new project
+$ ${tech.id} create my-project
 
-              {activeTab === "videos" && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-6">Video Tutorials</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                        <Video className="h-12 w-12 text-muted-foreground" />
+# Navigate to the project directory
+$ cd my-project
+
+# Start the development server
+$ ${tech.id} start`}
+                              </code>
+                            </pre>
+                          </div>
+                          <p className="leading-relaxed">
+                            Once you've completed these steps, you'll have a working development 
+                            environment ready for building applications with {tech.title}.
+                          </p>
+                        </div>
+                        <Separator />
+                        <div>
+                          <h3 className="text-xl font-medium mb-3">Core Concepts</h3>
+                          <p className="leading-relaxed mb-4">
+                            Understanding the core concepts of {tech.title} is essential for 
+                            becoming proficient. Here are the fundamental ideas you need to grasp:
+                          </p>
+                          <ul className="list-disc pl-5 space-y-2 mb-4">
+                            <li>Fundamental principle one</li>
+                            <li>Key concept two</li>
+                            <li>Essential pattern three</li>
+                            <li>Critical understanding four</li>
+                          </ul>
+                          <p className="leading-relaxed">
+                            These concepts form the foundation upon which you'll build your expertise.
+                          </p>
+                        </div>
+                        {/* More documentation sections here */}
                       </div>
-                      <h3 className="font-medium">{technology.title} for Beginners</h3>
-                      <p className="text-sm text-muted-foreground">A comprehensive introduction to {technology.title} concepts.</p>
+                    </ScrollArea>
+                  </div>
+                )}
+
+                {activeTab === "resources" && (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Learning Resources</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                      <Card>
+                        <CardContent className="p-6">
+                          <h3 className="text-lg font-medium mb-2">Official Documentation</h3>
+                          <p className="text-muted-foreground mb-4">The official guides and API references</p>
+                          <Button variant="outline" className="w-full">
+                            <BookOpen className="mr-2 h-4 w-4" />
+                            Visit Documentation
+                          </Button>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-6">
+                          <h3 className="text-lg font-medium mb-2">GitHub Repository</h3>
+                          <p className="text-muted-foreground mb-4">Source code and examples</p>
+                          <Button variant="outline" className="w-full">
+                            <Code className="mr-2 h-4 w-4" />
+                            View on GitHub
+                          </Button>
+                        </CardContent>
+                      </Card>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                        <Video className="h-12 w-12 text-muted-foreground" />
-                      </div>
-                      <h3 className="font-medium">Building Your First {technology.title} Project</h3>
-                      <p className="text-sm text-muted-foreground">Step-by-step guide to creating a real-world application.</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                        <Video className="h-12 w-12 text-muted-foreground" />
-                      </div>
-                      <h3 className="font-medium">Advanced {technology.title} Techniques</h3>
-                      <p className="text-sm text-muted-foreground">Deep dive into complex features and optimizations.</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center">
-                        <Video className="h-12 w-12 text-muted-foreground" />
-                      </div>
-                      <h3 className="font-medium">{technology.title} Best Practices</h3>
-                      <p className="text-sm text-muted-foreground">Learn industry standards and professional workflows.</p>
+
+                    <h3 className="text-xl font-medium mb-4">Recommended Books</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                      <Card>
+                        <CardContent className="p-4 flex flex-col items-center text-center">
+                          <div className="bg-muted w-full h-40 rounded-md mb-4 flex items-center justify-center">
+                            <BookOpen className="h-12 w-12 text-muted-foreground" />
+                          </div>
+                          <h4 className="font-medium mb-1">Definitive Guide</h4>
+                          <p className="text-sm text-muted-foreground">Comprehensive coverage of all topics</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4 flex flex-col items-center text-center">
+                          <div className="bg-muted w-full h-40 rounded-md mb-4 flex items-center justify-center">
+                            <BookOpen className="h-12 w-12 text-muted-foreground" />
+                          </div>
+                          <h4 className="font-medium mb-1">For Beginners</h4>
+                          <p className="text-sm text-muted-foreground">Start your journey with this friendly guide</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4 flex flex-col items-center text-center">
+                          <div className="bg-muted w-full h-40 rounded-md mb-4 flex items-center justify-center">
+                            <BookOpen className="h-12 w-12 text-muted-foreground" />
+                          </div>
+                          <h4 className="font-medium mb-1">Advanced Patterns</h4>
+                          <p className="text-sm text-muted-foreground">Master expert-level techniques and concepts</p>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
-                </div>
-              )}
-            </Card>
+                )}
+
+                {activeTab === "practice" && (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Collaborative Practice</h2>
+                    <p className="mb-6 text-muted-foreground">
+                      Join or create a collaborative coding session to practice with peers.
+                    </p>
+                    
+                    <div className="space-y-6">
+                      <Card className="border-2 border-primary/50">
+                        <CardContent className="p-6">
+                          <h3 className="text-lg font-medium mb-2">Create a New Room</h3>
+                          <p className="text-muted-foreground mb-4">
+                            Start a collaborative coding session and invite others to join.
+                          </p>
+                          <Button className="w-full" onClick={handlePracticeClick}>
+                            <Users className="mr-2 h-4 w-4" />
+                            Create Collaborative Room
+                          </Button>
+                        </CardContent>
+                      </Card>
+                      
+                      <h3 className="text-xl font-medium mt-8 mb-4">Active Rooms</h3>
+                      <div className="space-y-4">
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h4 className="font-medium">{tech.title} Basics Room</h4>
+                                <p className="text-sm text-muted-foreground">3 participants • Beginner level</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                Join
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h4 className="font-medium">Advanced {tech.title} Practice</h4>
+                                <p className="text-sm text-muted-foreground">2 participants • Advanced level</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                Join
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h4 className="font-medium">Project Collaboration</h4>
+                                <p className="text-sm text-muted-foreground">5 participants • Intermediate level</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                Join
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "tests" && (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Knowledge Assessment</h2>
+                    <p className="mb-6 text-muted-foreground">
+                      Test your understanding of {tech.title} with these assessments.
+                    </p>
+                    
+                    <div className="space-y-6">
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h3 className="text-lg font-medium mb-2">Fundamentals Quiz</h3>
+                              <p className="text-muted-foreground mb-2">10 questions • 15 minutes</p>
+                              <div className="flex items-center space-x-2 text-sm">
+                                <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Beginner</span>
+                                <span>78% completion rate</span>
+                              </div>
+                            </div>
+                            <Button>Start Quiz</Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h3 className="text-lg font-medium mb-2">Intermediate Assessment</h3>
+                              <p className="text-muted-foreground mb-2">15 questions • 25 minutes</p>
+                              <div className="flex items-center space-x-2 text-sm">
+                                <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Intermediate</span>
+                                <span>54% completion rate</span>
+                              </div>
+                            </div>
+                            <Button>Start Quiz</Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h3 className="text-lg font-medium mb-2">Expert Certification</h3>
+                              <p className="text-muted-foreground mb-2">30 questions • 45 minutes</p>
+                              <div className="flex items-center space-x-2 text-sm">
+                                <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">Advanced</span>
+                                <span>32% completion rate</span>
+                              </div>
+                            </div>
+                            <Button>Start Quiz</Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "videos" && (
+                  <div>
+                    <h2 className="text-2xl font-bold mb-6">Video Tutorials</h2>
+                    <p className="mb-6 text-muted-foreground">
+                      Learn {tech.title} through video lessons from top instructors.
+                    </p>
+                    
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card>
+                          <CardContent className="p-0">
+                            <div className="bg-muted aspect-video flex items-center justify-center">
+                              <Play className="h-12 w-12 text-muted-foreground" />
+                            </div>
+                            <div className="p-4">
+                              <h3 className="font-medium mb-1">{tech.title} Crash Course</h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                A complete beginner's guide to {tech.title}
+                              </p>
+                              <div className="flex items-center text-sm">
+                                <span className="flex items-center mr-4">
+                                  <Play className="h-3 w-3 mr-1" />
+                                  1.2M views
+                                </span>
+                                <span className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  45 minutes
+                                </span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardContent className="p-0">
+                            <div className="bg-muted aspect-video flex items-center justify-center">
+                              <Play className="h-12 w-12 text-muted-foreground" />
+                            </div>
+                            <div className="p-4">
+                              <h3 className="font-medium mb-1">Advanced {tech.title} Techniques</h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Master the advanced concepts and patterns
+                              </p>
+                              <div className="flex items-center text-sm">
+                                <span className="flex items-center mr-4">
+                                  <Play className="h-3 w-3 mr-1" />
+                                  850K views
+                                </span>
+                                <span className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  1 hour 20 minutes
+                                </span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardContent className="p-0">
+                            <div className="bg-muted aspect-video flex items-center justify-center">
+                              <Play className="h-12 w-12 text-muted-foreground" />
+                            </div>
+                            <div className="p-4">
+                              <h3 className="font-medium mb-1">{tech.title} Project Tutorial</h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Build a complete project from scratch
+                              </p>
+                              <div className="flex items-center text-sm">
+                                <span className="flex items-center mr-4">
+                                  <Play className="h-3 w-3 mr-1" />
+                                  675K views
+                                </span>
+                                <span className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  2 hours 15 minutes
+                                </span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardContent className="p-0">
+                            <div className="bg-muted aspect-video flex items-center justify-center">
+                              <Play className="h-12 w-12 text-muted-foreground" />
+                            </div>
+                            <div className="p-4">
+                              <h3 className="font-medium mb-1">{tech.title} Tips and Tricks</h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Productivity hacks and best practices
+                              </p>
+                              <div className="flex items-center text-sm">
+                                <span className="flex items-center mr-4">
+                                  <Play className="h-3 w-3 mr-1" />
+                                  520K views
+                                </span>
+                                <span className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  55 minutes
+                                </span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

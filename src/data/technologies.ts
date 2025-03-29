@@ -1,114 +1,116 @@
 
+import { LucideIcon } from "lucide-react";
+
 export interface Technology {
   id: string;
   title: string;
   description: string;
+  icon: 'ml' | 'react' | 'java' | 'python' | 'js' | 'cloud' | 'mobile' | 'blockchain' | 'ai' | 'devops';
+  color: string;
   students: number;
   lessons: number;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  color: string;
-  icon: 'ml' | 'react' | 'java' | 'python' | 'js' | 'cloud' | 'mobile' | 'blockchain' | 'ai' | 'devops';
 }
 
 export const technologies: Technology[] = [
   {
-    id: "machine-learning",
-    title: "Machine Learning Fundamentals",
-    description: "Learn the core concepts of machine learning and AI algorithms.",
-    students: 15000,
-    lessons: 24,
-    difficulty: "Intermediate",
-    color: "bg-purple-100",
-    icon: "ml"
-  },
-  {
-    id: "react-development",
+    id: "react",
     title: "React Development",
-    description: "Master modern React with hooks, context API and more.",
-    students: 25000,
-    lessons: 32,
-    difficulty: "Beginner",
-    color: "bg-blue-100",
-    icon: "react"
-  },
-  {
-    id: "java-programming",
-    title: "Java Programming",
-    description: "Build robust applications with Java programming language.",
-    students: 20000,
-    lessons: 28,
-    difficulty: "Advanced",
-    color: "bg-green-100",
-    icon: "java"
+    description: "Learn modern React with hooks, context API, and advanced patterns",
+    icon: "react",
+    color: "bg-blue-100 text-blue-700",
+    students: 12500,
+    lessons: 48,
+    difficulty: "Intermediate"
   },
   {
     id: "python",
-    title: "Python Programming",
-    description: "Learn Python from basics to advanced concepts and applications.",
-    students: 30000,
-    lessons: 36,
-    difficulty: "Beginner",
-    color: "bg-yellow-100",
-    icon: "python"
+    title: "Python Fundamentals",
+    description: "Master Python for data science, automation, and backend development",
+    icon: "python",
+    color: "bg-yellow-100 text-yellow-700",
+    students: 18900,
+    lessons: 56,
+    difficulty: "Beginner"
   },
   {
     id: "javascript",
-    title: "JavaScript Essentials",
-    description: "Master the language of the web with modern JavaScript.",
-    students: 28000,
-    lessons: 30,
-    difficulty: "Beginner",
-    color: "bg-amber-100",
-    icon: "js"
+    title: "JavaScript Mastery",
+    description: "Dive deep into JavaScript from fundamentals to advanced concepts",
+    icon: "js",
+    color: "bg-yellow-100 text-yellow-700",
+    students: 15200,
+    lessons: 42,
+    difficulty: "Beginner"
   },
   {
-    id: "aws-cloud",
-    title: "AWS Cloud Computing",
-    description: "Deploy and scale applications on Amazon Web Services.",
-    students: 12000,
-    lessons: 28,
-    difficulty: "Intermediate",
-    color: "bg-orange-100",
-    icon: "cloud"
+    id: "java",
+    title: "Java Programming",
+    description: "Build enterprise-grade applications with Java and Spring Boot",
+    icon: "java",
+    color: "bg-orange-100 text-orange-700",
+    students: 9800,
+    lessons: 52,
+    difficulty: "Intermediate"
   },
   {
-    id: "flutter-mobile",
-    title: "Flutter Mobile Development",
-    description: "Build cross-platform mobile apps with Flutter framework.",
-    students: 18000,
-    lessons: 34,
-    difficulty: "Intermediate",
-    color: "bg-blue-100",
-    icon: "mobile"
+    id: "machine-learning",
+    title: "Machine Learning",
+    description: "Understand ML algorithms and implement practical models",
+    icon: "ml",
+    color: "bg-green-100 text-green-700",
+    students: 7500,
+    lessons: 38,
+    difficulty: "Advanced"
+  },
+  {
+    id: "cloud-computing",
+    title: "Cloud Computing",
+    description: "Learn AWS, Azure, and GCP fundamentals for modern infrastructure",
+    icon: "cloud",
+    color: "bg-sky-100 text-sky-700",
+    students: 8200,
+    lessons: 44,
+    difficulty: "Intermediate"
+  },
+  {
+    id: "mobile-development",
+    title: "Mobile App Development",
+    description: "Build cross-platform mobile apps with React Native and Flutter",
+    icon: "mobile",
+    color: "bg-indigo-100 text-indigo-700",
+    students: 11300,
+    lessons: 50,
+    difficulty: "Intermediate"
   },
   {
     id: "blockchain",
-    title: "Blockchain Technology",
-    description: "Understand the fundamentals of blockchain and cryptocurrencies.",
-    students: 8000,
-    lessons: 22,
-    difficulty: "Advanced",
-    color: "bg-indigo-100",
-    icon: "blockchain"
+    title: "Blockchain Development",
+    description: "Understand blockchain technology and smart contract development",
+    icon: "blockchain",
+    color: "bg-purple-100 text-purple-700",
+    students: 5600,
+    lessons: 34,
+    difficulty: "Advanced"
   },
   {
     id: "artificial-intelligence",
     title: "Artificial Intelligence",
-    description: "Dive into AI concepts, neural networks and deep learning.",
-    students: 14000,
-    lessons: 30,
-    difficulty: "Advanced",
-    color: "bg-purple-100",
-    icon: "ai"
+    description: "Explore AI concepts, neural networks, and practical applications",
+    icon: "ai",
+    color: "bg-red-100 text-red-700",
+    students: 6800,
+    lessons: 40,
+    difficulty: "Advanced"
   },
   {
     id: "devops",
     title: "DevOps Engineering",
-    description: "Learn CI/CD, containerization and infrastructure as code.",
-    students: 10000,
-    lessons: 26,
-    difficulty: "Intermediate",
-    color: "bg-slate-100",
-    icon: "devops"
+    description: "Master CI/CD pipelines, containerization, and infrastructure as code",
+    icon: "devops",
+    color: "bg-emerald-100 text-emerald-700",
+    students: 7900,
+    lessons: 46,
+    difficulty: "Intermediate"
   }
 ];

@@ -1,37 +1,18 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { technologies } from "@/data/technologies";
 
-// Sample tech suggestions for predictive search
-const techSuggestions = [
-  "Machine Learning",
-  "React",
-  "Java",
-  "Python",
-  "JavaScript",
-  "TypeScript",
-  "Node.js",
-  "Angular",
-  "Vue.js",
-  "Swift",
-  "Kotlin",
-  "Docker",
-  "Kubernetes",
-  "AWS",
-  "Azure",
-  "Google Cloud",
-  "Blockchain",
-  "Data Science",
-  "Artificial Intelligence",
-  "DevOps"
-];
+// Create search suggestions based on our technologies
+const techSuggestions = technologies.map(tech => tech.title);
 
 export const Hero = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,18 +27,45 @@ export const Hero = () => {
     }
   }, [searchTerm]);
 
+  useEffect(() => {
+    // Close suggestions when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleSuggestionClick = (suggestion: string) => {
     setSearchTerm(suggestion);
     setShowSuggestions(false);
-    // Navigate to the path view for this technology
-    const path = suggestion.toLowerCase().replace(/\s+/g, "-");
-    navigate(`/path/${path}`);
+    // Find the technology by title and navigate to its path
+    const tech = technologies.find(t => t.title === suggestion);
+    if (tech) {
+      navigate(`/path/${tech.id}`);
+    }
   };
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      const path = searchTerm.toLowerCase().replace(/\s+/g, "-");
-      navigate(`/path/${path}`);
+      // Try to find a matching technology
+      const tech = technologies.find(t => 
+        t.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        t.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      if (tech) {
+        navigate(`/path/${tech.id}`);
+      } else {
+        // If no exact match, use the search term as a path ID
+        const path = searchTerm.toLowerCase().replace(/\s+/g, "-");
+        navigate(`/path/${path}`);
+      }
     }
   };
 
@@ -71,7 +79,7 @@ export const Hero = () => {
           Discover the perfect path to master any technology. Learn, track progress,
           and compete with others in your learning journey.
         </p>
-        <div className="max-w-xl mx-auto relative">
+        <div className="max-w-xl mx-auto relative" ref={searchRef}>
           <div className="absolute left-4 top-1/2 -translate-y-1/2">
             <Search className="h-5 w-5 text-muted-foreground" />
           </div>
