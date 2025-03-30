@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 const PathView = () => {
   const { id } = useParams();
@@ -38,6 +39,7 @@ const PathView = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     // Find the technology by id
@@ -54,12 +56,30 @@ const PathView = () => {
       }
     }
 
-    // Check if user is already enrolled in this course
-    const enrolledCourses = JSON.parse(
-      localStorage.getItem("enrolledCourses") || "[]"
-    );
-    setIsEnrolled(enrolledCourses.some((course: string) => course === id));
-  }, [id]);
+    // Check if user is already enrolled in this course from Supabase
+    if (isAuthenticated && user && id) {
+      checkEnrollment();
+    }
+  }, [id, isAuthenticated, user]);
+
+  const checkEnrollment = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('user_id', user?.id)
+        .eq('course_id', id)
+        .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      setIsEnrolled(!!data);
+    } catch (error) {
+      console.error("Error checking enrollment:", error);
+    }
+  };
 
   const handlePracticeClick = () => {
     toast({
@@ -69,21 +89,46 @@ const PathView = () => {
     setActiveTab("practice"); // Ensure the tab switches to "practice"
   };
 
-  const handleEnrollClick = () => {
-    // Get current enrolled courses from localStorage
-    const enrolledCourses = JSON.parse(
-      localStorage.getItem("enrolledCourses") || "[]"
-    );
-
-    // Add this course if not already enrolled
-    if (!enrolledCourses.includes(id)) {
-      enrolledCourses.push(id);
-      localStorage.setItem("enrolledCourses", JSON.stringify(enrolledCourses));
-      setIsEnrolled(true);
-
+  const handleEnrollClick = async () => {
+    if (!isAuthenticated) {
       toast({
-        title: "Successfully Enrolled!",
-        description: `You're now enrolled in ${tech?.title}. Access this course from your dashboard.`,
+        title: "Authentication required",
+        description: "Please sign in to enroll in courses",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('enrollments')
+        .insert([
+          { user_id: user?.id, course_id: id }
+        ]);
+
+      if (error) {
+        if (error.code === '23505') {
+          toast({
+            title: "Already Enrolled",
+            description: `You are already enrolled in ${tech?.title}`,
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        setIsEnrolled(true);
+        toast({
+          title: "Successfully Enrolled!",
+          description: `You're now enrolled in ${tech?.title}. Access this course from your dashboard.`,
+        });
+      }
+    } catch (error: any) {
+      console.error("Enrollment error:", error);
+      toast({
+        title: "Enrollment failed",
+        description: error.message || "An error occurred during enrollment",
+        variant: "destructive",
       });
     }
   };

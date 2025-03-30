@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,28 +14,24 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    navigate("/");
+    return null;
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Simulate login
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      login(email, password); // Fixed: Passing both email and password
-      toast({
-        title: "Login successful",
-        description: "Welcome back to PathWise!",
-      });
-      // Changed: Redirect to home page instead of dashboard
+      await login(email, password);
       navigate("/");
     } catch (error) {
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again",
-        variant: "destructive",
-      });
+      console.error("Login error:", error);
+      // Error handling is done in the login function
     } finally {
       setIsLoading(false);
     }
@@ -46,16 +43,11 @@ const Login = () => {
         // In a real app, you would verify this token on your server
         console.log("Google token:", tokenResponse);
 
-        // For demo purposes, we'll simulate a successful login
-        login("google-user@example.com", ""); // Fixed: Passing both email and password
-
         toast({
-          title: "Google login successful",
-          description: "Welcome to PathWise!",
+          title: "Google login not fully implemented",
+          description: "Please use email/password for now",
+          variant: "default",
         });
-
-        // Changed: Redirect to home page instead of dashboard
-        navigate("/");
       } catch (error) {
         toast({
           title: "Google login failed",

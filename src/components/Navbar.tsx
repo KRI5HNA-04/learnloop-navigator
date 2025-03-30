@@ -1,15 +1,26 @@
+
 import { Bell, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, profile, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const getUserInitials = () => {
+    if (profile?.username) {
+      return profile.username.substring(0, 2).toUpperCase();
+    } else if (user?.email) {
+      return user.email.substring(0, 2).toUpperCase();
+    }
+    return "U";
   };
 
   return (
@@ -38,18 +49,18 @@ export const Navbar = () => {
                   Dashboard
                 </Link>
               )}
-              <a
-                href="/path"
+              <Link
+                to="/path"
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
-                Paths
-              </a>
-              <a
-                href="/leaderboard"
+                My Paths
+              </Link>
+              <Link
+                to="/leaderboard"
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
                 Leaderboard
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -59,23 +70,17 @@ export const Navbar = () => {
                   <Bell className="h-5 w-5" />
                 </Button>
                 <div className="relative">
-                  {user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="h-8 w-8 rounded-full cursor-pointer"
-                      onClick={() => navigate("/dashboard")}
-                    />
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="hover:bg-muted"
-                      onClick={() => navigate("/dashboard")}
-                    >
-                      <User className="h-5 w-5" />
-                    </Button>
-                  )}
+                  <Avatar 
+                    className="h-8 w-8 cursor-pointer"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    {profile?.avatar ? (
+                      <AvatarImage src={profile.avatar} />
+                    ) : null}
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {getUserInitials()}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
                 <Button
                   variant="ghost"

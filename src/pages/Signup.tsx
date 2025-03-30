@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,13 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login } = useAuth(); // Using existing login function instead of register
+  const { signup, isAuthenticated } = useAuth();
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    navigate("/");
+    return null;
+  }
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,26 +39,11 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
-      // Simulate registration
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Since there's no register function, we'll use login instead
-      // In a real app, you would make a separate API call for registration
-      login(email, password);
-
-      toast({
-        title: "Registration successful",
-        description: "Welcome to PathWise!",
-      });
-
-      // Redirect to home page
+      await signup(email, password, name);
       navigate("/");
     } catch (error) {
-      toast({
-        title: "Registration failed",
-        description: "An error occurred during registration",
-        variant: "destructive",
-      });
+      console.error("Signup error:", error);
+      // Error handling is done in the signup function
     } finally {
       setIsLoading(false);
     }
@@ -63,17 +55,11 @@ const SignUp = () => {
         // In a real app, you would verify this token on your server
         console.log("Google token:", tokenResponse);
 
-        // For demo purposes, we'll simulate a successful registration
-        // Using login instead of register
-        login("google-user@example.com", "");
-
         toast({
-          title: "Google sign up successful",
-          description: "Welcome to PathWise!",
+          title: "Google signup not fully implemented",
+          description: "Please use email/password for now",
+          variant: "default",
         });
-
-        // Redirect to home page
-        navigate("/");
       } catch (error) {
         toast({
           title: "Google sign up failed",

@@ -1,3 +1,4 @@
+
 import {
   GraduationCap,
   Code,
@@ -12,6 +13,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface CourseCardProps {
   id: string;
@@ -45,6 +49,8 @@ export const CourseCard = ({
   icon,
 }: CourseCardProps) => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const { toast } = useToast();
 
   const getIcon = () => {
     switch (icon) {
@@ -70,6 +76,49 @@ export const CourseCard = ({
         return <GitBranch className="h-8 w-8" />;
       default:
         return <BookOpen className="h-8 w-8" />;
+    }
+  };
+
+  const handleEnroll = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to enroll in courses",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('enrollments')
+        .insert([
+          { user_id: user?.id, course_id: id }
+        ]);
+
+      if (error) {
+        if (error.code === '23505') {
+          toast({
+            title: "Already enrolled",
+            description: "You are already enrolled in this course",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        toast({
+          title: "Enrollment successful",
+          description: `You have successfully enrolled in ${title}`,
+        });
+      }
+    } catch (error: any) {
+      console.error("Enrollment error:", error);
+      toast({
+        title: "Enrollment failed",
+        description: error.message || "An error occurred during enrollment",
+        variant: "destructive",
+      });
     }
   };
 
@@ -126,9 +175,14 @@ export const CourseCard = ({
         >
           {difficulty}
         </span>
-        <Button variant="outline" className="ml-2" onClick={handleViewPath}>
-          View Path
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleViewPath}>
+            View
+          </Button>
+          <Button onClick={handleEnroll}>
+            Enroll
+          </Button>
+        </div>
       </div>
     </div>
   );
