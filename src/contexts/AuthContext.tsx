@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -7,7 +6,6 @@ import { User, Session } from '@supabase/supabase-js';
 interface UserProfile {
   id: string;
   username: string | null;
-  avatar_url?: string | null;
 }
 
 interface AuthContextType {
@@ -83,7 +81,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setProfile({
         id: data.id,
         username: data.username,
-        avatar_url: data.avatar_url,
       });
     } catch (error) {
       console.error("Error in fetchUserProfile:", error);

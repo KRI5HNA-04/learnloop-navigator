@@ -1,9 +1,8 @@
 
-import { Bell, Search, User, LogOut } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const Navbar = () => {
   const { user, profile, isAuthenticated, logout } = useAuth();
@@ -12,15 +11,6 @@ export const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
-  };
-
-  const getUserInitials = () => {
-    if (profile?.username) {
-      return profile.username.substring(0, 2).toUpperCase();
-    } else if (user?.email) {
-      return user.email.substring(0, 2).toUpperCase();
-    }
-    return "U";
   };
 
   return (
@@ -69,18 +59,8 @@ export const Navbar = () => {
                 <Button variant="ghost" size="icon" className="hover:bg-muted">
                   <Bell className="h-5 w-5" />
                 </Button>
-                <div className="relative">
-                  <Avatar 
-                    className="h-8 w-8 cursor-pointer"
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    {profile?.avatar ? (
-                      <AvatarImage src={profile.avatar} />
-                    ) : null}
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {getUserInitials()}
-                    </AvatarFallback>
-                  </Avatar>
+                <div className="text-sm font-medium">
+                  {profile?.username || user?.email?.split('@')[0] || "User"}
                 </div>
                 <Button
                   variant="ghost"

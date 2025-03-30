@@ -17,13 +17,6 @@ const Dashboard = () => {
       <div className="container mx-auto pt-24 px-4">
         <div className="bg-white rounded-xl p-6 shadow-md mb-8">
           <div className="flex items-center gap-4">
-            {profile?.avatar_url && (
-              <img 
-                src={profile.avatar_url} 
-                alt={profile.username || "User"} 
-                className="w-16 h-16 rounded-full border-2 border-primary"
-              />
-            )}
             <div>
               <h1 className="text-2xl font-bold">Welcome, {profile?.username || user?.email?.split('@')[0] || "User"}!</h1>
               <p className="text-muted-foreground">Track your learning progress and achievements</p>
