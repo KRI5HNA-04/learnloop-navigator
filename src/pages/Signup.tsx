@@ -7,32 +7,49 @@ import { useToast } from "@/hooks/use-toast";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Login = () => {
+const SignUp = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuth(); // Using existing login function instead of register
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords don't match",
+        description: "Please make sure your passwords match",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Simulate login
+      // Simulate registration
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      login(email, password); // Fixed: Passing both email and password
+
+      // Since there's no register function, we'll use login instead
+      // In a real app, you would make a separate API call for registration
+      login(email, password);
+
       toast({
-        title: "Login successful",
-        description: "Welcome back to PathWise!",
+        title: "Registration successful",
+        description: "Welcome to PathWise!",
       });
-      // Changed: Redirect to home page instead of dashboard
+
+      // Redirect to home page
       navigate("/");
     } catch (error) {
       toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again",
+        title: "Registration failed",
+        description: "An error occurred during registration",
         variant: "destructive",
       });
     } finally {
@@ -40,34 +57,35 @@ const Login = () => {
     }
   };
 
-  const googleLogin = useGoogleLogin({
+  const googleSignUp = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
         // In a real app, you would verify this token on your server
         console.log("Google token:", tokenResponse);
 
-        // For demo purposes, we'll simulate a successful login
-        login("google-user@example.com", ""); // Fixed: Passing both email and password
+        // For demo purposes, we'll simulate a successful registration
+        // Using login instead of register
+        login("google-user@example.com", "");
 
         toast({
-          title: "Google login successful",
+          title: "Google sign up successful",
           description: "Welcome to PathWise!",
         });
 
-        // Changed: Redirect to home page instead of dashboard
+        // Redirect to home page
         navigate("/");
       } catch (error) {
         toast({
-          title: "Google login failed",
-          description: "An error occurred during Google login",
+          title: "Google sign up failed",
+          description: "An error occurred during Google sign up",
           variant: "destructive",
         });
       }
     },
     onError: () => {
       toast({
-        title: "Google login failed",
-        description: "An error occurred during Google login",
+        title: "Google sign up failed",
+        description: "An error occurred during Google sign up",
         variant: "destructive",
       });
     },
@@ -77,13 +95,25 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-muted flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">Welcome back</h1>
+          <h1 className="text-3xl font-bold">Create an account</h1>
           <p className="text-muted-foreground mt-2">
-            Sign in to continue your learning journey
+            Sign up to start your learning journey
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSignUp} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="John Doe"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -97,15 +127,7 @@ const Login = () => {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                to="/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
+            <Label htmlFor="password">Password</Label>
             <Input
               id="password"
               type="password"
@@ -115,8 +137,19 @@ const Login = () => {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
 
@@ -135,7 +168,7 @@ const Login = () => {
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center"
-          onClick={() => googleLogin()}
+          onClick={() => googleSignUp()}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2" aria-hidden="true">
             <path
@@ -143,17 +176,17 @@ const Login = () => {
               fill="currentColor"
             />
           </svg>
-          Sign in with Google
+          Sign up with Google
         </Button>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <Link
-              to="/signup"
+              to="/login"
               className="text-primary font-medium hover:underline"
             >
-              Sign up
+              Sign in
             </Link>
           </p>
         </div>
@@ -162,4 +195,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
