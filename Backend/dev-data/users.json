@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "5c8a1f292f8fb814b56fa184",
+    "name": "Leo Gillespie",
+    "email": "leo@example.com",
+    "password": "test1234",
+    "__v": 0
+  },
+  {
+    "_id": "5c8a1f4e2f8fb814b56fa185",
+    "name": "Jennifer Hardy",
+    "email": "jennifer@example.com",
+    "password": "test1234",
+    "__v": 0
+  },
+  {
+    "_id": "5c8a1dfa2f8fb814b56fa181",
+    "name": "Lourdes Browning",
+    "email": "loulou@example.com",
+    "password": "test1234",
+    "__v": 0
+  }
+]

@@ -11,10 +11,12 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import React from "./pages/React";
+import Python from "./pages/python";
 import PathView from "./pages/PathView";
 import CollaborativeEditor from "./pages/CollaborativeEditor";
 import Path from "./pages/Path";
 import SignUp from "./pages/Signup";
+import Javascript from "./pages/Javascript";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/react" element={<React />} />
+              <Route path="/python" element={<Python />} />
+              <Route path="/javascript" element={<Javascript />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/path" element={<Path />} />
               <Route path="/path/:id" element={<PathView />} />

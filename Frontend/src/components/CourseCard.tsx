@@ -80,10 +80,10 @@ export const CourseCard = ({
         navigate("/react");
         break;
       case "python":
-        navigate("/Python");
+        navigate("/python");
         break;
       case "js":
-        navigate("/Javascript");
+        navigate("/javascript");
         break;
       default:
         // Default behavior for other course types

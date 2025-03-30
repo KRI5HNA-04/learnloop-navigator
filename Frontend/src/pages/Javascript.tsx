@@ -31,7 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 
-const React = () => {
+const Javascript = () => {
   const { id } = useParams();
   const [tech, setTech] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("roadmap");
@@ -248,22 +248,50 @@ const React = () => {
                                 Core concepts and basics
                               </p>
                             </div>
+                            <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
                           </div>
-                          <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="p-4 border-t">
                           <ul className="space-y-3">
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                              <span>Introduction to {tech.title}</span>
+                              <span>Introduction to JavaScript</span>
                             </li>
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
                               <span>Setting up your environment</span>
                             </li>
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
-                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Core syntax and structures</span>
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Variables and Data Types</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Operators</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Control Flow (if, else, switch)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Loops (for, while, do...while)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Functions</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Arrays</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>Objects</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+                              <span>DOM Manipulation (Basic)</span>
                             </li>
                           </ul>
                         </CollapsibleContent>
@@ -276,29 +304,60 @@ const React = () => {
                               <Code className="h-5 w-5 text-primary" />
                             </div>
                             <div className="text-left">
-                              <h3 className="font-medium">
-                                Intermediate Concepts
-                              </h3>
+                              <h3 className="font-medium">Intermediate</h3>
                               <p className="text-sm text-muted-foreground">
-                                Building on the basics
+                                Building upon the basics
                               </p>
                             </div>
+                            <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
                           </div>
-                          <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="p-4 border-t">
                           <ul className="space-y-3">
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Advanced patterns</span>
+                              <span>Scope and Closures</span>
                             </li>
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Best practices</span>
+                              <span>
+                                Asynchronous JavaScript (Callbacks, Promises,
+                                Async/Await)
+                              </span>
                             </li>
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Common architectures</span>
+                              <span>Object-Oriented Programming (OOP)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Error Handling (try...catch)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Modules (CommonJS, ES Modules)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>DOM Manipulation (Advanced)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Events (Advanced)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>
+                                Working with APIs (Fetch, XMLHttpRequest)
+                              </span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Regular Expressions</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Debugging</span>
                             </li>
                           </ul>
                         </CollapsibleContent>
@@ -311,27 +370,59 @@ const React = () => {
                               <BarChart className="h-5 w-5 text-primary" />
                             </div>
                             <div className="text-left">
-                              <h3 className="font-medium">Advanced Topics</h3>
+                              <h3 className="font-medium">Advanced</h3>
                               <p className="text-sm text-muted-foreground">
-                                Expert-level material
+                                Complex concepts and advanced use cases
                               </p>
                             </div>
+                            <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
                           </div>
-                          <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="p-4 border-t">
                           <ul className="space-y-3">
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Optimization techniques</span>
+                              <span>Prototypes and Inheritance</span>
                             </li>
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Enterprise integration</span>
+                              <span>Memory Management and Performance</span>
                             </li>
                             <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
                               <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
-                              <span>Bleeding-edge features</span>
+                              <span>
+                                WebSockets and Real-Time Communication
+                              </span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Web Workers</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>
+                                Service Workers and Progressive Web Apps (PWAs)
+                              </span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Node.js and Server-Side JavaScript</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Testing (Unit, Integration, E2E)</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>Design Patterns</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>WebAssembly</span>
+                            </li>
+                            <li className="flex items-center p-2 hover:bg-muted/50 rounded-md transition-colors">
+                              <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+                              <span>TypeScript</span>
                             </li>
                           </ul>
                         </CollapsibleContent>
@@ -735,4 +826,4 @@ $ ${tech.id} start`}
   );
 };
 
-export default React;
+export default Javascript;
