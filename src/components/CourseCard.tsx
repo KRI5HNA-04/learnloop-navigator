@@ -1,4 +1,3 @@
-
 import {
   GraduationCap,
   Code,
@@ -16,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
 
 interface CourseCardProps {
   id: string;
@@ -51,6 +51,33 @@ export const CourseCard = ({
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      checkEnrollment();
+    }
+  }, [isAuthenticated, user, id]);
+
+  const checkEnrollment = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('user_id', user?.id)
+        .eq('course_id', id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error checking enrollment:", error);
+        return;
+      }
+
+      setIsEnrolled(!!data);
+    } catch (error) {
+      console.error("Error in checkEnrollment:", error);
+    }
+  };
 
   const getIcon = () => {
     switch (icon) {
@@ -107,6 +134,7 @@ export const CourseCard = ({
           throw error;
         }
       } else {
+        setIsEnrolled(true);
         toast({
           title: "Enrollment successful",
           description: `You have successfully enrolled in ${title}`,
@@ -123,7 +151,6 @@ export const CourseCard = ({
   };
 
   const handleViewPath = () => {
-    // Custom navigation based on icon type
     switch (icon) {
       case "react":
         navigate("/react");
@@ -135,7 +162,6 @@ export const CourseCard = ({
         navigate("/javascript");
         break;
       default:
-        // Default behavior for other course types
         navigate(`/path/${id}`);
     }
   };
@@ -179,8 +205,12 @@ export const CourseCard = ({
           <Button variant="outline" onClick={handleViewPath}>
             View
           </Button>
-          <Button onClick={handleEnroll}>
-            Enroll
+          <Button 
+            onClick={handleEnroll}
+            disabled={isEnrolled}
+            variant={isEnrolled ? "secondary" : "default"}
+          >
+            {isEnrolled ? "Enrolled" : "Enroll"}
           </Button>
         </div>
       </div>
