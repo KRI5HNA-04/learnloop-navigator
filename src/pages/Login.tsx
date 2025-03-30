@@ -21,9 +21,8 @@ const Login = () => {
 
     try {
       // Simulate login
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      await login(email, password); // Fixed: Passing both email and password
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      login(email, password); // Fixed: Passing both email and password
       toast({
         title: "Login successful",
         description: "Welcome back to PathWise!",
@@ -100,7 +99,10 @@ const Login = () => {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link to="#" className="text-sm text-primary hover:underline">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -147,7 +149,10 @@ const Login = () => {
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="#" className="text-primary font-medium hover:underline">
+            <Link
+              to="/signup"
+              className="text-primary font-medium hover:underline"
+            >
               Sign up
             </Link>
           </p>
