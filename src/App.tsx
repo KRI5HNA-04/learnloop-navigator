@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import React from "./pages/React";
-import Python from "./pages/python";
+import Python from "./pages/Python";
 import PathView from "./pages/PathView";
 import CollaborativeEditor from "./pages/CollaborativeEditor";
 import Path from "./pages/Path";
