@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -30,7 +31,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PathView = () => {
   const { id } = useParams();
@@ -42,12 +43,10 @@ const PathView = () => {
   const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
-    // Find the technology by id
     const foundTech = technologies.find((t) => t.id === id);
     if (foundTech) {
       setTech(foundTech);
     } else {
-      // If not found by exact id, try to match by substring
       const matchedTech = technologies.find(
         (t) => t.id.includes(id || "") || id?.includes(t.id)
       );
@@ -56,7 +55,6 @@ const PathView = () => {
       }
     }
 
-    // Check if user is already enrolled in this course from Supabase
     if (isAuthenticated && user && id) {
       checkEnrollment();
     }
@@ -86,7 +84,7 @@ const PathView = () => {
       title: "Creating a collaborative room",
       description: "Loading collaborative editor in this view...",
     });
-    setActiveTab("practice"); // Ensure the tab switches to "practice"
+    setActiveTab("practice");
   };
 
   const handleEnrollClick = async () => {
@@ -154,7 +152,6 @@ const PathView = () => {
       <Navbar />
       <div className="pt-20 pb-10 px-4">
         <div className="container mx-auto">
-          {/* Top banner with Enroll button */}
           <div className="bg-white shadow rounded-lg p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <div
@@ -164,7 +161,6 @@ const PathView = () => {
                 {tech.icon === "python" && <Code className="h-8 w-8" />}
                 {tech.icon === "js" && <Code className="h-8 w-8" />}
                 {tech.icon === "ml" && <BarChart className="h-8 w-8" />}
-                {/* Add other icons as needed */}
               </div>
               <div>
                 <h1 className="text-2xl font-bold">{tech.title}</h1>
@@ -184,7 +180,6 @@ const PathView = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            {/* Sidebar */}
             <div className="md:col-span-3">
               <div className="bg-white shadow rounded-lg p-6 sticky top-24">
                 <p className="text-muted-foreground mb-6">{tech.description}</p>
@@ -268,7 +263,6 @@ const PathView = () => {
               </div>
             </div>
 
-            {/* Main content */}
             <div className="md:col-span-9">
               <div className="bg-white shadow rounded-lg p-6">
                 {activeTab === "roadmap" && (
@@ -456,7 +450,6 @@ $ ${tech.id} start`}
                             build your expertise.
                           </p>
                         </div>
-                        {/* More documentation sections here */}
                       </div>
                     </ScrollArea>
                   </div>
