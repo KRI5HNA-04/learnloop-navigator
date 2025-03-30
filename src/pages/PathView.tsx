@@ -2,15 +2,27 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
+import {
   Collapsible,
   CollapsibleTrigger,
-  CollapsibleContent 
+  CollapsibleContent,
 } from "@/components/ui/collapsible";
-import { 
-  BookOpen, Code, FileText, Play, CheckCircle, 
-  Folder, ChevronDown, ChevronRight, MessageSquare, 
-  Video, Users, Award, BarChart, Circle, Clock
+import {
+  BookOpen,
+  Code,
+  FileText,
+  Play,
+  CheckCircle,
+  Folder,
+  ChevronDown,
+  ChevronRight,
+  MessageSquare,
+  Video,
+  Users,
+  Award,
+  BarChart,
+  Circle,
+  Clock,
 } from "lucide-react";
 import { technologies } from "@/data/technologies";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,31 +35,57 @@ const PathView = () => {
   const { id } = useParams();
   const [tech, setTech] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("roadmap");
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     // Find the technology by id
-    const foundTech = technologies.find(t => t.id === id);
+    const foundTech = technologies.find((t) => t.id === id);
     if (foundTech) {
       setTech(foundTech);
     } else {
       // If not found by exact id, try to match by substring
-      const matchedTech = technologies.find(t => 
-        t.id.includes(id || "") || id?.includes(t.id)
+      const matchedTech = technologies.find(
+        (t) => t.id.includes(id || "") || id?.includes(t.id)
       );
       if (matchedTech) {
         setTech(matchedTech);
       }
     }
+
+    // Check if user is already enrolled in this course
+    const enrolledCourses = JSON.parse(
+      localStorage.getItem("enrolledCourses") || "[]"
+    );
+    setIsEnrolled(enrolledCourses.some((course: string) => course === id));
   }, [id]);
 
   const handlePracticeClick = () => {
     toast({
       title: "Creating a collaborative room",
-      description: "Redirecting to collaborative editor...",
+      description: "Loading collaborative editor in this view...",
     });
-    navigate('/collaborative-editor');
+    setActiveTab("practice"); // Ensure the tab switches to "practice"
+  };
+
+  const handleEnrollClick = () => {
+    // Get current enrolled courses from localStorage
+    const enrolledCourses = JSON.parse(
+      localStorage.getItem("enrolledCourses") || "[]"
+    );
+
+    // Add this course if not already enrolled
+    if (!enrolledCourses.includes(id)) {
+      enrolledCourses.push(id);
+      localStorage.setItem("enrolledCourses", JSON.stringify(enrolledCourses));
+      setIsEnrolled(true);
+
+      toast({
+        title: "Successfully Enrolled!",
+        description: `You're now enrolled in ${tech?.title}. Access this course from your dashboard.`,
+      });
+    }
   };
 
   if (!tech) {
@@ -55,7 +93,9 @@ const PathView = () => {
       <div className="min-h-screen bg-gradient-to-b from-white to-muted flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Technology not found</h2>
-          <p className="text-muted-foreground mb-6">The learning path you're looking for doesn't exist yet.</p>
+          <p className="text-muted-foreground mb-6">
+            The learning path you're looking for doesn't exist yet.
+          </p>
           <Link to="/">
             <Button>Return Home</Button>
           </Link>
@@ -69,20 +109,41 @@ const PathView = () => {
       <Navbar />
       <div className="pt-20 pb-10 px-4">
         <div className="container mx-auto">
+          {/* Top banner with Enroll button */}
+          <div className="bg-white shadow rounded-lg p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <div
+                className={`w-14 h-14 rounded-lg mr-4 flex items-center justify-center ${tech.color}`}
+              >
+                {tech.icon === "react" && <Code className="h-8 w-8" />}
+                {tech.icon === "python" && <Code className="h-8 w-8" />}
+                {tech.icon === "js" && <Code className="h-8 w-8" />}
+                {tech.icon === "ml" && <BarChart className="h-8 w-8" />}
+                {/* Add other icons as needed */}
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">{tech.title}</h1>
+                <p className="text-muted-foreground">
+                  {tech.students.toLocaleString()} students enrolled
+                </p>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              className="w-full md:w-auto"
+              onClick={handleEnrollClick}
+              disabled={isEnrolled}
+            >
+              {isEnrolled ? "Already Enrolled" : "Enroll Now"}
+            </Button>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             {/* Sidebar */}
             <div className="md:col-span-3">
               <div className="bg-white shadow rounded-lg p-6 sticky top-24">
-                <div className={`w-14 h-14 rounded-lg mb-4 flex items-center justify-center ${tech.color}`}>
-                  {tech.icon === 'react' && <Code className="h-8 w-8" />}
-                  {tech.icon === 'python' && <Code className="h-8 w-8" />}
-                  {tech.icon === 'js' && <Code className="h-8 w-8" />}
-                  {tech.icon === 'ml' && <BarChart className="h-8 w-8" />}
-                  {/* Add other icons as needed */}
-                </div>
-                <h1 className="text-2xl font-bold mb-2">{tech.title}</h1>
                 <p className="text-muted-foreground mb-6">{tech.description}</p>
-                
+
                 <div className="space-y-1">
                   <Button
                     variant={activeTab === "roadmap" ? "default" : "ghost"}
@@ -167,7 +228,9 @@ const PathView = () => {
               <div className="bg-white shadow rounded-lg p-6">
                 {activeTab === "roadmap" && (
                   <div>
-                    <h2 className="text-2xl font-bold mb-6">Learning Roadmap</h2>
+                    <h2 className="text-2xl font-bold mb-6">
+                      Learning Roadmap
+                    </h2>
                     <p className="mb-6 text-muted-foreground">
                       Follow this step-by-step roadmap to master {tech.title}
                     </p>
@@ -181,7 +244,9 @@ const PathView = () => {
                             </div>
                             <div className="text-left">
                               <h3 className="font-medium">Fundamentals</h3>
-                              <p className="text-sm text-muted-foreground">Core concepts and basics</p>
+                              <p className="text-sm text-muted-foreground">
+                                Core concepts and basics
+                              </p>
                             </div>
                           </div>
                           <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
@@ -211,8 +276,12 @@ const PathView = () => {
                               <Code className="h-5 w-5 text-primary" />
                             </div>
                             <div className="text-left">
-                              <h3 className="font-medium">Intermediate Concepts</h3>
-                              <p className="text-sm text-muted-foreground">Building on the basics</p>
+                              <h3 className="font-medium">
+                                Intermediate Concepts
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                Building on the basics
+                              </p>
                             </div>
                           </div>
                           <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
@@ -243,7 +312,9 @@ const PathView = () => {
                             </div>
                             <div className="text-left">
                               <h3 className="font-medium">Advanced Topics</h3>
-                              <p className="text-sm text-muted-foreground">Expert-level material</p>
+                              <p className="text-sm text-muted-foreground">
+                                Expert-level material
+                              </p>
                             </div>
                           </div>
                           <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200" />
@@ -275,19 +346,26 @@ const PathView = () => {
                     <ScrollArea className="h-[600px] pr-4">
                       <div className="space-y-6">
                         <div>
-                          <h3 className="text-xl font-medium mb-3">Introduction</h3>
+                          <h3 className="text-xl font-medium mb-3">
+                            Introduction
+                          </h3>
                           <p className="leading-relaxed">
-                            {tech.title} is a powerful technology that enables developers to build modern, 
-                            efficient applications. This documentation will guide you through all the 
-                            essential concepts and techniques required to become proficient.
+                            {tech.title} is a powerful technology that enables
+                            developers to build modern, efficient applications.
+                            This documentation will guide you through all the
+                            essential concepts and techniques required to become
+                            proficient.
                           </p>
                         </div>
                         <Separator />
                         <div>
-                          <h3 className="text-xl font-medium mb-3">Getting Started</h3>
+                          <h3 className="text-xl font-medium mb-3">
+                            Getting Started
+                          </h3>
                           <p className="leading-relaxed mb-4">
-                            Before diving into {tech.title}, you'll need to set up your development environment.
-                            Follow these steps to get started:
+                            Before diving into {tech.title}, you'll need to set
+                            up your development environment. Follow these steps
+                            to get started:
                           </p>
                           <div className="bg-muted/50 p-4 rounded-lg mb-4">
                             <pre className="text-sm overflow-x-auto">
@@ -307,16 +385,20 @@ $ ${tech.id} start`}
                             </pre>
                           </div>
                           <p className="leading-relaxed">
-                            Once you've completed these steps, you'll have a working development 
-                            environment ready for building applications with {tech.title}.
+                            Once you've completed these steps, you'll have a
+                            working development environment ready for building
+                            applications with {tech.title}.
                           </p>
                         </div>
                         <Separator />
                         <div>
-                          <h3 className="text-xl font-medium mb-3">Core Concepts</h3>
+                          <h3 className="text-xl font-medium mb-3">
+                            Core Concepts
+                          </h3>
                           <p className="leading-relaxed mb-4">
-                            Understanding the core concepts of {tech.title} is essential for 
-                            becoming proficient. Here are the fundamental ideas you need to grasp:
+                            Understanding the core concepts of {tech.title} is
+                            essential for becoming proficient. Here are the
+                            fundamental ideas you need to grasp:
                           </p>
                           <ul className="list-disc pl-5 space-y-2 mb-4">
                             <li>Fundamental principle one</li>
@@ -325,7 +407,8 @@ $ ${tech.id} start`}
                             <li>Critical understanding four</li>
                           </ul>
                           <p className="leading-relaxed">
-                            These concepts form the foundation upon which you'll build your expertise.
+                            These concepts form the foundation upon which you'll
+                            build your expertise.
                           </p>
                         </div>
                         {/* More documentation sections here */}
@@ -336,12 +419,18 @@ $ ${tech.id} start`}
 
                 {activeTab === "resources" && (
                   <div>
-                    <h2 className="text-2xl font-bold mb-6">Learning Resources</h2>
+                    <h2 className="text-2xl font-bold mb-6">
+                      Learning Resources
+                    </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                       <Card>
                         <CardContent className="p-6">
-                          <h3 className="text-lg font-medium mb-2">Official Documentation</h3>
-                          <p className="text-muted-foreground mb-4">The official guides and API references</p>
+                          <h3 className="text-lg font-medium mb-2">
+                            Official Documentation
+                          </h3>
+                          <p className="text-muted-foreground mb-4">
+                            The official guides and API references
+                          </p>
                           <Button variant="outline" className="w-full">
                             <BookOpen className="mr-2 h-4 w-4" />
                             Visit Documentation
@@ -350,8 +439,12 @@ $ ${tech.id} start`}
                       </Card>
                       <Card>
                         <CardContent className="p-6">
-                          <h3 className="text-lg font-medium mb-2">GitHub Repository</h3>
-                          <p className="text-muted-foreground mb-4">Source code and examples</p>
+                          <h3 className="text-lg font-medium mb-2">
+                            GitHub Repository
+                          </h3>
+                          <p className="text-muted-foreground mb-4">
+                            Source code and examples
+                          </p>
                           <Button variant="outline" className="w-full">
                             <Code className="mr-2 h-4 w-4" />
                             View on GitHub
@@ -360,7 +453,9 @@ $ ${tech.id} start`}
                       </Card>
                     </div>
 
-                    <h3 className="text-xl font-medium mb-4">Recommended Books</h3>
+                    <h3 className="text-xl font-medium mb-4">
+                      Recommended Books
+                    </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                       <Card>
                         <CardContent className="p-4 flex flex-col items-center text-center">
@@ -368,7 +463,9 @@ $ ${tech.id} start`}
                             <BookOpen className="h-12 w-12 text-muted-foreground" />
                           </div>
                           <h4 className="font-medium mb-1">Definitive Guide</h4>
-                          <p className="text-sm text-muted-foreground">Comprehensive coverage of all topics</p>
+                          <p className="text-sm text-muted-foreground">
+                            Comprehensive coverage of all topics
+                          </p>
                         </CardContent>
                       </Card>
                       <Card>
@@ -377,7 +474,9 @@ $ ${tech.id} start`}
                             <BookOpen className="h-12 w-12 text-muted-foreground" />
                           </div>
                           <h4 className="font-medium mb-1">For Beginners</h4>
-                          <p className="text-sm text-muted-foreground">Start your journey with this friendly guide</p>
+                          <p className="text-sm text-muted-foreground">
+                            Start your journey with this friendly guide
+                          </p>
                         </CardContent>
                       </Card>
                       <Card>
@@ -385,8 +484,12 @@ $ ${tech.id} start`}
                           <div className="bg-muted w-full h-40 rounded-md mb-4 flex items-center justify-center">
                             <BookOpen className="h-12 w-12 text-muted-foreground" />
                           </div>
-                          <h4 className="font-medium mb-1">Advanced Patterns</h4>
-                          <p className="text-sm text-muted-foreground">Master expert-level techniques and concepts</p>
+                          <h4 className="font-medium mb-1">
+                            Advanced Patterns
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            Master expert-level techniques and concepts
+                          </p>
                         </CardContent>
                       </Card>
                     </div>
@@ -395,19 +498,28 @@ $ ${tech.id} start`}
 
                 {activeTab === "practice" && (
                   <div>
-                    <h2 className="text-2xl font-bold mb-6">Collaborative Practice</h2>
+                    <h2 className="text-2xl font-bold mb-6">
+                      Collaborative Practice
+                    </h2>
                     <p className="mb-6 text-muted-foreground">
-                      Join or create a collaborative coding session to practice with peers.
+                      Join or create a collaborative coding session to practice
+                      with peers.
                     </p>
-                    
+
                     <div className="space-y-6">
                       <Card className="border-2 border-primary/50">
                         <CardContent className="p-6">
-                          <h3 className="text-lg font-medium mb-2">Create a New Room</h3>
+                          <h3 className="text-lg font-medium mb-2">
+                            Create a New Room
+                          </h3>
                           <p className="text-muted-foreground mb-4">
-                            Start a collaborative coding session and invite others to join.
+                            Start a collaborative coding session and invite
+                            others to join.
                           </p>
-                          <Button className="w-full" onClick={handlePracticeClick}>
+                          <Button
+                            className="w-full"
+                            onClick={handlePracticeClick}
+                          >
                             <Users className="mr-2 h-4 w-4" />
                             Go to Collaborative Editor
                           </Button>
@@ -419,20 +531,29 @@ $ ${tech.id} start`}
 
                 {activeTab === "tests" && (
                   <div>
-                    <h2 className="text-2xl font-bold mb-6">Knowledge Assessment</h2>
+                    <h2 className="text-2xl font-bold mb-6">
+                      Knowledge Assessment
+                    </h2>
                     <p className="mb-6 text-muted-foreground">
-                      Test your understanding of {tech.title} with these assessments.
+                      Test your understanding of {tech.title} with these
+                      assessments.
                     </p>
-                    
+
                     <div className="space-y-6">
                       <Card>
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h3 className="text-lg font-medium mb-2">Fundamentals Quiz</h3>
-                              <p className="text-muted-foreground mb-2">10 questions • 15 minutes</p>
+                              <h3 className="text-lg font-medium mb-2">
+                                Fundamentals Quiz
+                              </h3>
+                              <p className="text-muted-foreground mb-2">
+                                10 questions • 15 minutes
+                              </p>
                               <div className="flex items-center space-x-2 text-sm">
-                                <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Beginner</span>
+                                <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                                  Beginner
+                                </span>
                                 <span>78% completion rate</span>
                               </div>
                             </div>
@@ -440,15 +561,21 @@ $ ${tech.id} start`}
                           </div>
                         </CardContent>
                       </Card>
-                      
+
                       <Card>
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h3 className="text-lg font-medium mb-2">Intermediate Assessment</h3>
-                              <p className="text-muted-foreground mb-2">15 questions • 25 minutes</p>
+                              <h3 className="text-lg font-medium mb-2">
+                                Intermediate Assessment
+                              </h3>
+                              <p className="text-muted-foreground mb-2">
+                                15 questions • 25 minutes
+                              </p>
                               <div className="flex items-center space-x-2 text-sm">
-                                <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Intermediate</span>
+                                <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">
+                                  Intermediate
+                                </span>
                                 <span>54% completion rate</span>
                               </div>
                             </div>
@@ -456,15 +583,21 @@ $ ${tech.id} start`}
                           </div>
                         </CardContent>
                       </Card>
-                      
+
                       <Card>
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between">
                             <div>
-                              <h3 className="text-lg font-medium mb-2">Expert Certification</h3>
-                              <p className="text-muted-foreground mb-2">30 questions • 45 minutes</p>
+                              <h3 className="text-lg font-medium mb-2">
+                                Expert Certification
+                              </h3>
+                              <p className="text-muted-foreground mb-2">
+                                30 questions • 45 minutes
+                              </p>
                               <div className="flex items-center space-x-2 text-sm">
-                                <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">Advanced</span>
+                                <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+                                  Advanced
+                                </span>
                                 <span>32% completion rate</span>
                               </div>
                             </div>
@@ -480,9 +613,10 @@ $ ${tech.id} start`}
                   <div>
                     <h2 className="text-2xl font-bold mb-6">Video Tutorials</h2>
                     <p className="mb-6 text-muted-foreground">
-                      Learn {tech.title} through video lessons from top instructors.
+                      Learn {tech.title} through video lessons from top
+                      instructors.
                     </p>
-                    
+
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <Card>
@@ -491,7 +625,9 @@ $ ${tech.id} start`}
                               <Play className="h-12 w-12 text-muted-foreground" />
                             </div>
                             <div className="p-4">
-                              <h3 className="font-medium mb-1">{tech.title} Crash Course</h3>
+                              <h3 className="font-medium mb-1">
+                                {tech.title} Crash Course
+                              </h3>
                               <p className="text-sm text-muted-foreground mb-2">
                                 A complete beginner's guide to {tech.title}
                               </p>
@@ -508,14 +644,16 @@ $ ${tech.id} start`}
                             </div>
                           </CardContent>
                         </Card>
-                        
+
                         <Card>
                           <CardContent className="p-0">
                             <div className="bg-muted aspect-video flex items-center justify-center">
                               <Play className="h-12 w-12 text-muted-foreground" />
                             </div>
                             <div className="p-4">
-                              <h3 className="font-medium mb-1">Advanced {tech.title} Techniques</h3>
+                              <h3 className="font-medium mb-1">
+                                Advanced {tech.title} Techniques
+                              </h3>
                               <p className="text-sm text-muted-foreground mb-2">
                                 Master the advanced concepts and patterns
                               </p>
@@ -525,21 +663,23 @@ $ ${tech.id} start`}
                                   850K views
                                 </span>
                                 <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  1 hour 20 minutes
+                                  <Clock className="h-3 w-3 mr-1" />1 hour 20
+                                  minutes
                                 </span>
                               </div>
                             </div>
                           </CardContent>
                         </Card>
-                        
+
                         <Card>
                           <CardContent className="p-0">
                             <div className="bg-muted aspect-video flex items-center justify-center">
                               <Play className="h-12 w-12 text-muted-foreground" />
                             </div>
                             <div className="p-4">
-                              <h3 className="font-medium mb-1">{tech.title} Project Tutorial</h3>
+                              <h3 className="font-medium mb-1">
+                                {tech.title} Project Tutorial
+                              </h3>
                               <p className="text-sm text-muted-foreground mb-2">
                                 Build a complete project from scratch
                               </p>
@@ -549,21 +689,23 @@ $ ${tech.id} start`}
                                   675K views
                                 </span>
                                 <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  2 hours 15 minutes
+                                  <Clock className="h-3 w-3 mr-1" />2 hours 15
+                                  minutes
                                 </span>
                               </div>
                             </div>
                           </CardContent>
                         </Card>
-                        
+
                         <Card>
                           <CardContent className="p-0">
                             <div className="bg-muted aspect-video flex items-center justify-center">
                               <Play className="h-12 w-12 text-muted-foreground" />
                             </div>
                             <div className="p-4">
-                              <h3 className="font-medium mb-1">{tech.title} Tips and Tricks</h3>
+                              <h3 className="font-medium mb-1">
+                                {tech.title} Tips and Tricks
+                              </h3>
                               <p className="text-sm text-muted-foreground mb-2">
                                 Productivity hacks and best practices
                               </p>

@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Leaderboard from "./pages/Leaderboard";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -11,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import PathView from "./pages/PathView";
 import CollaborativeEditor from "./pages/CollaborativeEditor";
+import Path from "./pages/Path";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/path" element={<Path />} />
               <Route path="/path/:id" element={<PathView />} />
               <Route
                 path="/collaborative-editor"

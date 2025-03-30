@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { StatsCard } from "@/components/StatsCard";
@@ -6,6 +5,8 @@ import { StatsSummaryCard } from "@/components/StatsSummaryCard";
 import { CourseCard } from "@/components/CourseCard";
 import { Toaster } from "@/components/ui/toaster";
 import { technologies } from "@/data/technologies";
+import { UserStreak } from "@/components/UserStreak";
+import StreakTracker from "@/components/StreakTracker";
 
 const Index = () => {
   return (
@@ -14,21 +15,24 @@ const Index = () => {
       <Hero />
       <div className="container mx-auto px-4 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-1 space-y-6 mt-17">
+            <StreakTracker />
+          </div>
           {/* Stats Section - Left Side */}
-          <div className="lg:col-span-1 space-y-6">
-            <StatsSummaryCard 
+          {/* <div className="lg:col-span-1 space-y-6">
+            <StatsSummaryCard
               streak={{
                 current: 15,
                 nextReward: 5,
-                rank: 42
+                rank: 42,
               }}
               rewards={{
                 total: 2500,
                 tier: "Silver",
-                nextTier: 500
+                nextTier: 500,
               }}
             />
-            <StatsCard 
+            <StatsCard
               title="Completion Rate"
               value="85"
               unit="%"
@@ -36,8 +40,8 @@ const Index = () => {
               details={["Above average", "Top 25% learners"]}
               showProgressRing={true}
             />
-          </div>
-          
+          </div> */}
+
           {/* Course Cards - Right Side */}
           <div className="lg:col-span-3">
             <h2 className="text-2xl font-bold mb-6">Popular Learning Paths</h2>

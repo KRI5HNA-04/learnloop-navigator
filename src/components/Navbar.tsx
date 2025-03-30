@@ -39,13 +39,13 @@ export const Navbar = () => {
                 </Link>
               )}
               <a
-                href="#"
+                href="/path"
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
                 Paths
               </a>
               <a
-                href="#"
+                href="/leaderboard"
                 className="text-sm font-medium hover:text-primary transition-colors"
               >
                 Leaderboard
