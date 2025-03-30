@@ -6,8 +6,8 @@ import { User, Session } from '@supabase/supabase-js';
 
 interface UserProfile {
   id: string;
-  username: string;
-  avatar?: string;
+  username: string | null;
+  avatar_url?: string | null;
 }
 
 interface AuthContextType {
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setProfile({
         id: data.id,
         username: data.username,
-        avatar: data.avatar_url,
+        avatar_url: data.avatar_url,
       });
     } catch (error) {
       console.error("Error in fetchUserProfile:", error);
