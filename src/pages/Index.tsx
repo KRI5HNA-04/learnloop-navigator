@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { technologies } from "@/data/technologies";
 import { UserStreak } from "@/components/UserStreak";
 import StreakTracker from "@/components/StreakTracker";
+import ChatWidget from "@/components/chat/ChatWidget";
 
 const Index = () => {
   return (
@@ -64,6 +65,7 @@ const Index = () => {
         </div>
       </div>
       <Toaster />
+      <ChatWidget />
     </div>
   );
 };

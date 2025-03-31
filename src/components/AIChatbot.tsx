@@ -1,162 +1,82 @@
+// import React, { useState } from "react";
+// import axios from "axios";
+// import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
-import { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { supabase } from "@/integrations/supabase/client";
+// const Chatbot = () => {
+//   const [messages, setMessages] = useState([]);
+//   const [input, setInput] = useState("");
+//   const [isOpen, setIsOpen] = useState(false);
 
-interface Message {
-  id: string;
-  content: string;
-  sender: "user" | "bot";
-  timestamp: Date;
-}
+//   const API_KEY = "AIzaSyBMiQ4wb2F_67GNh3kZsk2V3Ng8j54RUFk"; // Store this securely in .env
+//   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
-export const AIChatbot = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      content: "Hello! I'm your learning assistant. How can I help you today?",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ]);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+//   const sendMessage = async () => {
+//     if (!input.trim()) return;
+//     const newMessages = [...messages, { text: input, sender: "user" }];
+//     setMessages(newMessages);
+//     setInput("");
 
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
-  }, [messages]);
+//     try {
+//       const response = await axios.post(API_URL, {
+//         contents: [{ role: "user", parts: [{ text: input }] }],
+//       });
+//       const botReply =
+//         response.data?.candidates[0]?.content?.parts[0]?.text ||
+//         "Sorry, I didn't understand that.";
+//       setMessages([...newMessages, { text: botReply, sender: "bot" }]);
+//     } catch (error) {
+//       console.error("Error fetching response:", error);
+//       setMessages([
+//         ...newMessages,
+//         { text: "Error fetching response. Try again later.", sender: "bot" },
+//       ]);
+//     }
+//   };
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+//   return (
+//     <div className="fixed bottom-4 right-4 flex flex-col items-end">
+//       <button
+//         onClick={() => setIsOpen(!isOpen)}
+//         className="bg-blue-500 text-white p-3 rounded-full shadow-lg"
+//       >
+//         <IoChatbubbleEllipsesOutline size={24} />
+//       </button>
+//       {isOpen && (
+//         <div className="chat-container bg-white p-4 border rounded-lg shadow-lg w-80 max-h-96 flex flex-col mt-2">
+//           <div className="chat-box flex-grow overflow-y-auto p-2 border rounded-md">
+//             {messages.map((msg, index) => (
+//               <div
+//                 key={index}
+//                 className={`p-2 my-1 ${
+//                   msg.sender === "user"
+//                     ? "text-right text-blue-600"
+//                     : "text-left text-gray-700"
+//                 }`}
+//               >
+//                 <strong>{msg.sender === "user" ? "You:" : "AI:"}</strong>{" "}
+//                 {msg.text}
+//               </div>
+//             ))}
+//           </div>
+//           <div className="flex mt-2">
+//             <input
+//               type="text"
+//               value={input}
+//               onChange={(e) => setInput(e.target.value)}
+//               className="flex-grow p-2 border rounded-l-md"
+//               placeholder="Ask something..."
+//             />
+//             <button
+//               onClick={sendMessage}
+//               className="bg-blue-500 text-white p-2 rounded-r-md"
+//             >
+//               Send
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputMessage,
-      sender: "user",
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputMessage("");
-    setIsLoading(true);
-
-    try {
-      // In a real implementation, this would call a Supabase Edge Function
-      // with OpenAI integration
-      const dummyResponses = [
-        "You can find all course materials in the resources section of each learning path.",
-        "To collaborate with other students, use the practice section where you can join coding rooms.",
-        "Our courses range from beginner to advanced difficulty levels.",
-        "Yes, you'll receive a certificate upon completing a course and passing all tests.",
-        "You can track your progress through the dashboard after enrolling in courses.",
-      ];
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const botMessage: Message = {
-        id: Date.now().toString(),
-        content: dummyResponses[Math.floor(Math.random() * dummyResponses.length)],
-        sender: "bot",
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error("Error sending message:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="fixed bottom-4 right-4 z-50">
-      {!isOpen ? (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="h-12 w-12 rounded-full shadow-lg"
-        >
-          <MessageSquare />
-        </Button>
-      ) : (
-        <div className="bg-white rounded-lg shadow-lg w-80 sm:w-96 flex flex-col h-[500px]">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="font-medium">Learning Assistant</h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${
-                    message.sender === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      message.sender === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
-                  >
-                    <p className="text-sm">{message.content}</p>
-                    <span className="text-xs opacity-70 mt-1 block">
-                      {message.timestamp.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="max-w-[80%] rounded-lg px-4 py-2 bg-muted">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" />
-                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "0.2s" }} />
-                      <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "0.4s" }} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </ScrollArea>
-          <div className="p-4 border-t">
-            <div className="flex items-center space-x-2">
-              <Input
-                placeholder="Type your question..."
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-              />
-              <Button onClick={handleSendMessage} disabled={isLoading}>
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+// export default Chatbot;
