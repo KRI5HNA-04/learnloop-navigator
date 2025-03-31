@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import VideoCard from "@/components/VideoCard";
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -36,6 +37,7 @@ const React = () => {
   const [tech, setTech] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("roadmap");
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null); // New state for active video
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -604,7 +606,6 @@ $ ${tech.id} start`}
                     </div>
                   </div>
                 )}
-
                 {activeTab === "practice" && (
                   <div>
                     <h2 className="text-2xl font-bold mb-6">
@@ -625,13 +626,12 @@ $ ${tech.id} start`}
                             Start a collaborative coding session and invite
                             others to join.
                           </p>
-                          <Button
-                            className="w-full"
-                            onClick={handlePracticeClick}
-                          >
-                            <Users className="mr-2 h-4 w-4" />
-                            Go to Collaborative Editor
-                          </Button>
+                          <Link to="/collaborative">
+                            <Button className="w-full">
+                              <Users className="mr-2 h-4 w-4" />
+                              Go to Collaborative Editor
+                            </Button>
+                          </Link>
                         </CardContent>
                       </Card>
                     </div>
@@ -726,7 +726,7 @@ $ ${tech.id} start`}
                       instructors.
                     </p>
 
-                    <div className="space-y-6">
+                    {/* <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <Card>
                           <CardContent className="p-0">
@@ -832,7 +832,61 @@ $ ${tech.id} start`}
                           </CardContent>
                         </Card>
                       </div>
+                    </div> */}
+
+                    <h3 className="text-2xl font-bold text-left mb-6">
+                      Featured Video Tutorials
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <VideoCard
+                          title="React Crash Course"
+                          description="A complete beginner's guide to React"
+                          views="1.2M"
+                          duration="45 minutes"
+                          videoId="w7ejDZ8SWv8"
+                          isExpanded={activeVideoId === "w7ejDZ8SWv8"}
+                          setActiveVideoId={setActiveVideoId}
+                        />
+                        <VideoCard
+                          title="Advanced JavaScript Techniques"
+                          description="Master the advanced concepts and patterns"
+                          views="850K"
+                          duration="1 hour 20 minutes"
+                          videoId="jS4aFq5-91M"
+                          isExpanded={activeVideoId === "jS4aFq5-91M"}
+                          setActiveVideoId={setActiveVideoId}
+                        />
+                        <VideoCard
+                          title="Node.js Project Tutorial"
+                          description="Build a complete project from scratch"
+                          views="675K"
+                          duration="2 hours 15 minutes"
+                          videoId="Oe421EPjeBE"
+                          isExpanded={activeVideoId === "Oe421EPjeBE"}
+                          setActiveVideoId={setActiveVideoId}
+                        />
+                        <VideoCard
+                          title="CSS Tips and Tricks"
+                          description="Productivity hacks and best practices"
+                          views="520K"
+                          duration="55 minutes"
+                          videoId="1Rs2ND1ryYc"
+                          isExpanded={activeVideoId === "1Rs2ND1ryYc"}
+                          setActiveVideoId={setActiveVideoId}
+                        />
+                        <VideoCard
+                          title="TypeScript Full Course"
+                          description="Learn TypeScript from zero to hero"
+                          views="980K"
+                          duration="1 hour 45 minutes"
+                          videoId="30LWjhZzg50"
+                          isExpanded={activeVideoId === "30LWjhZzg50"}
+                          setActiveVideoId={setActiveVideoId}
+                        />
+                      </div>
                     </div>
+                    {/* </div> */}
                   </div>
                 )}
               </div>

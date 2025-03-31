@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import ChatWidget from "@/components/chat/ChatWidget";
+
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -65,10 +67,10 @@ const PathView = () => {
   const checkEnrollment = async () => {
     try {
       const { data, error } = await supabase
-        .from('enrollments')
-        .select('id')
-        .eq('user_id', user?.id)
-        .eq('course_id', id)
+        .from("enrollments")
+        .select("id")
+        .eq("user_id", user?.id)
+        .eq("course_id", id)
         .maybeSingle();
 
       if (error) {
@@ -102,13 +104,11 @@ const PathView = () => {
 
     try {
       const { data, error } = await supabase
-        .from('enrollments')
-        .insert([
-          { user_id: user?.id, course_id: id }
-        ]);
+        .from("enrollments")
+        .insert([{ user_id: user?.id, course_id: id }]);
 
       if (error) {
-        if (error.code === '23505') {
+        if (error.code === "23505") {
           toast({
             title: "Already Enrolled",
             description: `You are already enrolled in ${tech?.title}`,
@@ -649,6 +649,7 @@ $ ${tech.id} start`}
       </div>
     </div>
   );
+  <ChatWidget />;
 };
 
 export default PathView;
