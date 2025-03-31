@@ -18,6 +18,7 @@ import CollaborativeEditor from "./pages/CollaborativeEditor";
 import Path from "./pages/Path";
 import SignUp from "./pages/Signup";
 import Javascript from "./pages/Javascript";
+import { AIChatbot } from "./components/AIChatbot";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <AIChatbot />
           </BrowserRouter>
         </AuthProvider>
       </TooltipProvider>

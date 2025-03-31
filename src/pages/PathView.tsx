@@ -32,6 +32,8 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { CourseVideos } from "@/components/CourseVideos";
+import { CollaborativeRoomEditor } from "@/components/CollaborativeRoomEditor";
 
 const PathView = () => {
   const { id } = useParams();
@@ -174,6 +176,7 @@ const PathView = () => {
               className="w-full md:w-auto"
               onClick={handleEnrollClick}
               disabled={isEnrolled}
+              variant={isEnrolled ? "secondary" : "default"}
             >
               {isEnrolled ? "Already Enrolled" : "Enroll Now"}
             </Button>
@@ -544,26 +547,7 @@ $ ${tech.id} start`}
                       with peers.
                     </p>
 
-                    <div className="space-y-6">
-                      <Card className="border-2 border-primary/50">
-                        <CardContent className="p-6">
-                          <h3 className="text-lg font-medium mb-2">
-                            Create a New Room
-                          </h3>
-                          <p className="text-muted-foreground mb-4">
-                            Start a collaborative coding session and invite
-                            others to join.
-                          </p>
-                          <Button
-                            className="w-full"
-                            onClick={handlePracticeClick}
-                          >
-                            <Users className="mr-2 h-4 w-4" />
-                            Go to Collaborative Editor
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    </div>
+                    <CollaborativeRoomEditor />
                   </div>
                 )}
 
@@ -655,113 +639,7 @@ $ ${tech.id} start`}
                       instructors.
                     </p>
 
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                {tech.title} Crash Course
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                A complete beginner's guide to {tech.title}
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  1.2M views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  45 minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                Advanced {tech.title} Techniques
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Master the advanced concepts and patterns
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  850K views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />1 hour 20
-                                  minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                {tech.title} Project Tutorial
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Build a complete project from scratch
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  675K views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />2 hours 15
-                                  minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                {tech.title} Tips and Tricks
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Productivity hacks and best practices
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  520K views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  55 minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </div>
+                    <CourseVideos course={tech.icon} />
                   </div>
                 )}
               </div>

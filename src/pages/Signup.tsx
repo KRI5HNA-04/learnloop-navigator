@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -14,6 +15,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [emailValidating, setEmailValidating] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { signup, isAuthenticated } = useAuth();
@@ -23,6 +25,36 @@ const SignUp = () => {
     navigate("/");
     return null;
   }
+
+  const validateEmail = async (email: string) => {
+    setEmailValidating(true);
+    try {
+      // Check if this email already exists in the auth system
+      const { data, error } = await supabase.auth.admin.listUsers({
+        filter: {
+          email: email
+        }
+      });
+
+      // This is a simplified check. In a real app, you'd use a dedicated API for this
+      // which would be more secure and respect privacy concerns
+      if (data && data.users && data.users.length > 0) {
+        toast({
+          title: "Email already registered",
+          description: "This email is already in use. Please use another email or log in.",
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Error validating email:", error);
+      return true; // Allow signup attempt if validation fails
+    } finally {
+      setEmailValidating(false);
+    }
+  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,11 +71,32 @@ const SignUp = () => {
     setIsLoading(true);
 
     try {
+      // Validate the email first
+      const isEmailValid = await validateEmail(email);
+      if (!isEmailValid) {
+        setIsLoading(false);
+        return;
+      }
+
       await signup(email, password, name);
       navigate("/");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Signup error:", error);
-      // Error handling is done in the signup function
+      
+      // Handle specific error cases
+      if (error.message && error.message.includes("already")) {
+        toast({
+          title: "Email already registered",
+          description: "This email is already in use. Please use another email or log in.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Signup failed",
+          description: error.message || "An unexpected error occurred",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -134,7 +187,7 @@ const SignUp = () => {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button type="submit" className="w-full" disabled={isLoading || emailValidating}>
             {isLoading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
