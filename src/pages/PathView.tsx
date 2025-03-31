@@ -35,7 +35,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { CourseVideos } from "@/components/CourseVideos";
-import { CollaborativeRoomEditor } from "@/components/CollaborativeRoomEditor";
 
 const PathView = () => {
   const { id } = useParams();
@@ -546,8 +545,6 @@ $ ${tech.id} start`}
                       Join or create a collaborative coding session to practice
                       with peers.
                     </p>
-
-                    <CollaborativeRoomEditor />
                   </div>
                 )}
 

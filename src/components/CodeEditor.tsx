@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
@@ -9,8 +8,12 @@ interface CodeEditorProps {
   className?: string;
 }
 
-const CodeEditor = ({ value, onChange, language = "javascript", className }: CodeEditorProps) => {
-  // In a real implementation, we would use a library like Monaco Editor or CodeMirror
+const CodeEditor = ({
+  value,
+  onChange,
+  language = "javascript",
+  className,
+}: CodeEditorProps) => {
   // This is a simplified version for demonstration purposes
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -18,7 +21,7 @@ const CodeEditor = ({ value, onChange, language = "javascript", className }: Cod
     // Auto-resize the textarea based on content
     const textarea = textareaRef.current;
     if (textarea) {
-      textarea.style.height = 'auto';
+      textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [value]);
@@ -35,8 +38,8 @@ const CodeEditor = ({ value, onChange, language = "javascript", className }: Cod
         value={value}
         onChange={handleChange}
         className="h-full w-full resize-none bg-gray-900 p-4 font-mono text-sm text-white outline-none"
-        style={{ 
-          minHeight: '100%',
+        style={{
+          minHeight: "100%",
           lineHeight: 1.5,
           tabSize: 2,
         }}
