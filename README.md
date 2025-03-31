@@ -1,54 +1,13 @@
-# Welcome to your Lovable project
+# Welcome to your PatWise: Adaptive E-learning Platform
 
-## Project info
+PathWise is an all-in-one integrated e-learning platform designed to streamline the educational journey for students. By consolidating the best features from popular educational websites into a single platform, PathWise eliminates the need to navigate between multiple sites while studying.
 
-**URL**: https://lovable.dev/projects/11b7dc0e-f949-48a5-acb0-1bf5dcaf314e
+The platform incorporates gamified learning experiences inspired by Khan Academy, where students earn e-coins by completing courses and maintaining streaks, redeemable for merchandise or premium content. It features interactive technology roadmaps similar to roadmap.sh, allowing users to follow structured learning paths for various technologies. Social elements include streak tracking and leaderboards borrowed from GitHub and competitive coding sites, fostering healthy competition and accountability.
 
-## How can I edit this code?
+PathWise also offers practical tools like a distraction-free YouTube player, comprehensive documentation hub, and collaborative coding environment. The platform culminates with skills verification through assessments that award recognized certificates.
 
-There are several ways of editing your application.
+Built using React, TypeScript, Tailwind CSS, Node.js, and Shadcn components, PathWise creates a cohesive ecosystem that enhances productivity and learning outcomes by bringing everything students need for exam preparation or interview readiness into one intuitive interface.RetryClaude can make mistakes. Please double-check responses.
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/11b7dc0e-f949-48a5-acb0-1bf5dcaf314e) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
 
 ## What technologies are used for this project?
 
@@ -59,11 +18,3 @@ This project is built with .
 - React
 - shadcn-ui
 - Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/11b7dc0e-f949-48a5-acb0-1bf5dcaf314e) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
