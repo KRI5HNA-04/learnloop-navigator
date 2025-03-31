@@ -1,4 +1,4 @@
-# Welcome to your PatWise: Adaptive E-learning Platform
+# Welcome to your PathWise: Adaptive E-learning Platform
 
 PathWise is an all-in-one integrated e-learning platform designed to streamline the educational journey for students. By consolidating the best features from popular educational websites into a single platform, PathWise eliminates the need to navigate between multiple sites while studying.
 
