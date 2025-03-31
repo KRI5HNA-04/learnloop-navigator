@@ -122,7 +122,7 @@ const Python = () => {
                 {/* Add other icons as needed */}
               </div>
               <div>
-                <h1 className="text-2xl font-bold">{tech.title}</h1>
+                <h1 className="text-2xl font-bold">{"Python Fundamentals"}</h1>
                 <p className="text-muted-foreground">
                   {tech.students.toLocaleString()} students enrolled
                 </p>

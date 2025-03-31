@@ -37,9 +37,48 @@ const React = () => {
   const [tech, setTech] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState("roadmap");
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null); // New state for active video
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Video data for the tutorials
+  const videoTutorials = [
+    {
+      id: "w7ejDZ8SWv8",
+      title: "React Crash Course",
+      description: "A complete beginner's guide to React",
+      views: "1.2M",
+      duration: "45 minutes",
+    },
+    {
+      id: "jS4aFq5-91M",
+      title: "Advanced JavaScript Techniques",
+      description: "Master the advanced concepts and patterns",
+      views: "850K",
+      duration: "1 hour 20 minutes",
+    },
+    {
+      id: "Oe421EPjeBE",
+      title: "Node.js Project Tutorial",
+      description: "Build a complete project from scratch",
+      views: "675K",
+      duration: "2 hours 15 minutes",
+    },
+    {
+      id: "1Rs2ND1ryYc",
+      title: "CSS Tips and Tricks",
+      description: "Productivity hacks and best practices",
+      views: "520K",
+      duration: "55 minutes",
+    },
+    {
+      id: "30LWjhZzg50",
+      title: "TypeScript Full Course",
+      description: "Learn TypeScript from zero to hero",
+      views: "980K",
+      duration: "1 hour 45 minutes",
+    },
+  ];
 
   useEffect(() => {
     // Find the technology by id
@@ -726,167 +765,47 @@ $ ${tech.id} start`}
                       instructors.
                     </p>
 
-                    {/* <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                {tech.title} Crash Course
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                A complete beginner's guide to {tech.title}
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  1.2M views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  45 minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                Advanced {tech.title} Techniques
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Master the advanced concepts and patterns
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  850K views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />1 hour 20
-                                  minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                {tech.title} Project Tutorial
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Build a complete project from scratch
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  675K views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />2 hours 15
-                                  minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-
-                        <Card>
-                          <CardContent className="p-0">
-                            <div className="bg-muted aspect-video flex items-center justify-center">
-                              <Play className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                            <div className="p-4">
-                              <h3 className="font-medium mb-1">
-                                {tech.title} Tips and Tricks
-                              </h3>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Productivity hacks and best practices
-                              </p>
-                              <div className="flex items-center text-sm">
-                                <span className="flex items-center mr-4">
-                                  <Play className="h-3 w-3 mr-1" />
-                                  520K views
-                                </span>
-                                <span className="flex items-center">
-                                  <Clock className="h-3 w-3 mr-1" />
-                                  55 minutes
-                                </span>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
+                    {activeVideoId ? (
+                      // When a video is active, display only that video in an expanded view
+                      <div className="mb-6">
+                        {videoTutorials.map(
+                          (video) =>
+                            video.id === activeVideoId && (
+                              <VideoCard
+                                key={video.id}
+                                title={video.title}
+                                description={video.description}
+                                views={video.views}
+                                duration={video.duration}
+                                videoId={video.id}
+                                isExpanded={true}
+                                setActiveVideoId={setActiveVideoId}
+                              />
+                            )
+                        )}
                       </div>
-                    </div> */}
-
-                    <h3 className="text-2xl font-bold text-left mb-6">
-                      Featured Video Tutorials
-                    </h3>
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <VideoCard
-                          title="React Crash Course"
-                          description="A complete beginner's guide to React"
-                          views="1.2M"
-                          duration="45 minutes"
-                          videoId="w7ejDZ8SWv8"
-                          isExpanded={activeVideoId === "w7ejDZ8SWv8"}
-                          setActiveVideoId={setActiveVideoId}
-                        />
-                        <VideoCard
-                          title="Advanced JavaScript Techniques"
-                          description="Master the advanced concepts and patterns"
-                          views="850K"
-                          duration="1 hour 20 minutes"
-                          videoId="jS4aFq5-91M"
-                          isExpanded={activeVideoId === "jS4aFq5-91M"}
-                          setActiveVideoId={setActiveVideoId}
-                        />
-                        <VideoCard
-                          title="Node.js Project Tutorial"
-                          description="Build a complete project from scratch"
-                          views="675K"
-                          duration="2 hours 15 minutes"
-                          videoId="Oe421EPjeBE"
-                          isExpanded={activeVideoId === "Oe421EPjeBE"}
-                          setActiveVideoId={setActiveVideoId}
-                        />
-                        <VideoCard
-                          title="CSS Tips and Tricks"
-                          description="Productivity hacks and best practices"
-                          views="520K"
-                          duration="55 minutes"
-                          videoId="1Rs2ND1ryYc"
-                          isExpanded={activeVideoId === "1Rs2ND1ryYc"}
-                          setActiveVideoId={setActiveVideoId}
-                        />
-                        <VideoCard
-                          title="TypeScript Full Course"
-                          description="Learn TypeScript from zero to hero"
-                          views="980K"
-                          duration="1 hour 45 minutes"
-                          videoId="30LWjhZzg50"
-                          isExpanded={activeVideoId === "30LWjhZzg50"}
-                          setActiveVideoId={setActiveVideoId}
-                        />
+                    ) : (
+                      // When no video is active, show the grid of all videos
+                      <div>
+                        <h3 className="text-2xl font-bold text-left mb-6">
+                          Featured Video Tutorials
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {videoTutorials.map((video) => (
+                            <VideoCard
+                              key={video.id}
+                              title={video.title}
+                              description={video.description}
+                              views={video.views}
+                              duration={video.duration}
+                              videoId={video.id}
+                              isExpanded={false}
+                              setActiveVideoId={setActiveVideoId}
+                            />
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                    {/* </div> */}
+                    )}
                   </div>
                 )}
               </div>
