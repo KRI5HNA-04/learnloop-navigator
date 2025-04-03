@@ -15,6 +15,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [emailValidating, setEmailValidating] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -110,29 +111,47 @@ const SignUp = () => {
     }
   };
 
+  const handleGoogleSignUp = async (token: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Signup successful",
+        description: "Welcome to PathWise!",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      console.error("Google signup error:", error);
+      toast({
+        title: "Google signup failed",
+        description: error.message || "An error occurred during Google signup",
+        variant: "destructive",
+      });
+    }
+  };
+
   const googleSignUp = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      setGoogleLoading(true);
       try {
-        // In a real app, you would verify this token on your server
-        console.log("Google token:", tokenResponse);
-
-        toast({
-          title: "Google signup not fully implemented",
-          description: "Please use email/password for now",
-          variant: "default",
-        });
+        await handleGoogleSignUp(tokenResponse.access_token);
       } catch (error) {
-        toast({
-          title: "Google sign up failed",
-          description: "An error occurred during Google sign up",
-          variant: "destructive",
-        });
+        console.error("Google signup error:", error);
+      } finally {
+        setGoogleLoading(false);
       }
     },
-    onError: () => {
+    onError: (errorResponse) => {
+      console.error("Google signup error:", errorResponse);
       toast({
-        title: "Google sign up failed",
-        description: "An error occurred during Google sign up",
+        title: "Google signup failed",
+        description: "An error occurred during Google signup",
         variant: "destructive",
       });
     },
@@ -216,6 +235,7 @@ const SignUp = () => {
           variant="outline"
           className="w-full flex items-center justify-center"
           onClick={() => googleSignUp()}
+          disabled={googleLoading}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2" aria-hidden="true">
             <path
@@ -223,7 +243,7 @@ const SignUp = () => {
               fill="currentColor"
             />
           </svg>
-          Sign up with Google
+          {googleLoading ? "Signing up..." : "Sign up with Google"}
         </Button>
 
         <div className="mt-6 text-center">

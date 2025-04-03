@@ -7,11 +7,13 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
@@ -37,26 +39,45 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = async (token: string) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Login successful",
+        description: "Welcome back to PathWise!",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      toast({
+        title: "Google login failed",
+        description: error.message || "An error occurred during Google login",
+        variant: "destructive",
+      });
+    }
+  };
+
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
+      setGoogleLoading(true);
       try {
-        // In a real app, you would verify this token on your server
-        console.log("Google token:", tokenResponse);
-
-        toast({
-          title: "Google login not fully implemented",
-          description: "Please use email/password for now",
-          variant: "default",
-        });
+        // Use the access_token from Google to sign in with Supabase
+        await handleGoogleLogin(tokenResponse.access_token);
       } catch (error) {
-        toast({
-          title: "Google login failed",
-          description: "An error occurred during Google login",
-          variant: "destructive",
-        });
+        console.error("Google login error:", error);
+      } finally {
+        setGoogleLoading(false);
       }
     },
-    onError: () => {
+    onError: (errorResponse) => {
+      console.error("Google login error:", errorResponse);
       toast({
         title: "Google login failed",
         description: "An error occurred during Google login",
@@ -128,6 +149,7 @@ const Login = () => {
           variant="outline"
           className="w-full flex items-center justify-center"
           onClick={() => googleLogin()}
+          disabled={googleLoading}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2" aria-hidden="true">
             <path
@@ -135,7 +157,7 @@ const Login = () => {
               fill="currentColor"
             />
           </svg>
-          Sign in with Google
+          {googleLoading ? "Signing in..." : "Sign in with Google"}
         </Button>
 
         <div className="mt-6 text-center">
