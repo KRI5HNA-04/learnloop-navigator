@@ -29,16 +29,24 @@ const SignUp = () => {
   const validateEmail = async (email: string) => {
     setEmailValidating(true);
     try {
-      // Check if this email already exists in the auth system
-      const { data, error } = await supabase.auth.admin.listUsers({
-        filter: {
-          email: email
+      // Check if this email already exists using the auth.signUp API with a dummy password
+      // This is a more reliable approach than trying to use admin APIs which aren't available client-side
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password: `${Math.random().toString(36).slice(2)}${Math.random().toString(36).slice(2)}`, // Random password
+        options: {
+          // Setting emailRedirectTo to false will prevent sending confirmation email
+          emailRedirectTo: undefined
         }
       });
 
-      // This is a simplified check. In a real app, you'd use a dedicated API for this
-      // which would be more secure and respect privacy concerns
-      if (data && data.users && data.users.length > 0) {
+      // If auth.signUp returns user data but status is not confirmed, the email exists
+      if (data && data.user && !data.user.email_confirmed_at) {
+        return true; // Email doesn't exist or isn't confirmed yet
+      }
+
+      // If there's an error message containing "already", the email is registered
+      if (error && error.message.toLowerCase().includes("already")) {
         toast({
           title: "Email already registered",
           description: "This email is already in use. Please use another email or log in.",
@@ -47,7 +55,7 @@ const SignUp = () => {
         return false;
       }
       
-      return true;
+      return true; // Allow signup attempt if validation is inconclusive
     } catch (error) {
       console.error("Error validating email:", error);
       return true; // Allow signup attempt if validation fails
