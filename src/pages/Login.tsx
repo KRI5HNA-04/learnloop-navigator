@@ -5,15 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
@@ -38,53 +35,6 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-
-  const handleGoogleLogin = async (token: string) => {
-    try {
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Login successful",
-        description: "Welcome back to PathWise!",
-      });
-      
-      navigate("/");
-    } catch (error: any) {
-      console.error("Google login error:", error);
-      toast({
-        title: "Google login failed",
-        description: error.message || "An error occurred during Google login",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setGoogleLoading(true);
-      try {
-        // Use the access_token from Google to sign in with Supabase
-        await handleGoogleLogin(tokenResponse.access_token);
-      } catch (error) {
-        console.error("Google login error:", error);
-      } finally {
-        setGoogleLoading(false);
-      }
-    },
-    onError: (errorResponse) => {
-      console.error("Google login error:", errorResponse);
-      toast({
-        title: "Google login failed",
-        description: "An error occurred during Google login",
-        variant: "destructive",
-      });
-    },
-  });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-muted flex items-center justify-center p-4">
@@ -132,33 +82,6 @@ const Login = () => {
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
-
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-muted"></div>
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full flex items-center justify-center"
-          onClick={() => googleLogin()}
-          disabled={googleLoading}
-        >
-          <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2" aria-hidden="true">
-            <path
-              d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-              fill="currentColor"
-            />
-          </svg>
-          {googleLoading ? "Signing in..." : "Sign in with Google"}
-        </Button>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
