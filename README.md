@@ -15,9 +15,6 @@ Built using React, TypeScript, Tailwind CSS, Node.js, and Shadcn components, Pat
 
 
 
-
-
-
 ## What technologies are used for this project?
 
 This project is built with .
